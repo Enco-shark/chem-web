@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Laboratory</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+    <!-- Ambient background -->
+    <div class="ambient-bg">
+        <div class="ambient-orb orb-1"></div>
+        <div class="ambient-orb orb-2"></div>
+        <div class="ambient-orb orb-3"></div>
+    </div>
+
+    <!-- Top toolbar -->
+    <header class="toolbar glass-panel">
+        <div class="toolbar-left">
+            <div class="app-logo">
+                <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                    <circle cx="14" cy="14" r="12" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+                    <circle cx="10" cy="11" r="3" fill="currentColor" opacity="0.4"/>
+                    <circle cx="18" cy="11" r="3" fill="currentColor" opacity="0.4"/>
+                    <circle cx="14" cy="18" r="3" fill="currentColor" opacity="0.4"/>
+                    <line x1="10" y1="11" x2="18" y2="11" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                    <line x1="10" y1="11" x2="14" y2="18" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                    <line x1="18" y1="11" x2="14" y2="18" stroke="currentColor" stroke-width="1" opacity="0.3"/>
+                </svg>
+                <span class="app-title" data-i18n="appTitle">Chemical Laboratory</span>
+            </div>
+        </div>
+        <div class="toolbar-center">
+            <div class="search-box glass-input">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                    <circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="10.5" y1="10.5" x2="14.5" y2="14.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Search elements, compounds, reactions..." autocomplete="off">
+                <div id="searchSuggestions" class="suggestions-dropdown glass-panel"></div>
+            </div>
+        </div>
+        <div class="toolbar-right">
+            <button class="toolbar-btn glass-btn" id="langToggle" data-i18n-title="language" title="Language">
+                <span class="lang-label">EN</span>
+            </button>
+            <button class="toolbar-btn glass-btn" id="themeToggle" data-i18n-title="theme" title="Theme">
+                <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <circle cx="9" cy="9" r="4" stroke="currentColor" stroke-width="1.2"/>
+                    <line x1="9" y1="1" x2="9" y2="3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="9" y1="15" x2="9" y2="17" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="1" y1="9" x2="3" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="15" y1="9" x2="17" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="3.34" y1="3.34" x2="4.76" y2="4.76" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="13.24" y1="13.24" x2="14.66" y2="14.66" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="3.34" y1="14.66" x2="4.76" y2="13.24" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    <line x1="13.24" y1="4.76" x2="14.66" y2="3.34" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                </svg>
+                <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 18 18" fill="none" style="display:none">
+                    <path d="M15 9.5C15 13.09 12.09 16 8.5 16C5.46 16 2.93 13.84 2.25 11C2.09 10.33 2 9.63 2 8.91C2 4.99 5.14 1.82 9.04 1.79C9.36 1.79 9.67 1.8 9.98 1.83C9.32 2.5 8.9 3.43 8.9 4.45C8.9 6.47 10.54 8.12 12.56 8.12C13.29 8.12 13.97 7.91 14.54 7.56C14.83 8.35 15 9.11 15 9.5Z" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+            </button>
+            <button class="toolbar-btn glass-btn" id="viewToggle" data-i18n-title="viewMode" title="View Mode">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                    <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.2"/>
+                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
+                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5" transform="rotate(60 9 9)"/>
+                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5" transform="rotate(120 9 9)"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main navigation -->
+    <nav class="main-nav glass-panel">
+        <div class="nav-track">
+            <div class="nav-indicator"></div>
+            <button class="nav-tab active" data-tab="reactions">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 2L10 6M10 14L10 18M2 10L6 10M14 10L18 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="5" cy="5" r="1.5" fill="currentColor" opacity="0.5"/>
+                    <circle cx="15" cy="15" r="1.5" fill="currentColor" opacity="0.5"/>
+                    <circle cx="15" cy="5" r="1.5" fill="currentColor" opacity="0.5"/>
+                </svg>
+                <span data-i18n="navReactions">Reactions</span>
+            </button>
+            <button class="nav-tab" data-tab="analyzer">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M7 2V7L3 15C2.2 16.6 3.4 18 5.2 18H14.8C16.6 18 17.8 16.6 17 15L13 7V2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="7" y1="2" x2="13" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                    <path d="M5 13H15" stroke="currentColor" stroke-width="1" opacity="0.5"/>
+                    <circle cx="8" cy="15" r="1" fill="currentColor" opacity="0.4"/>
+                    <circle cx="12" cy="14" r="0.8" fill="currentColor" opacity="0.4"/>
+                </svg>
+                <span data-i18n="navAnalyzer">Compound Analyzer</span>
+            </button>
+            <button class="nav-tab" data-tab="organic">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 2L17 6V14L10 18L3 14V6L10 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <line x1="10" y1="2" x2="10" y2="18" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="3" y1="6" x2="17" y2="6" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="3" y1="14" x2="17" y2="14" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+                </svg>
+                <span data-i18n="navOrganic">Organic Chemistry</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main content area -->
+    <main class="content-area">
+        <!-- Reactions module -->
+        <section class="module-page active" id="page-reactions">
+            <div class="module-header">
+                <h1 class="module-title" data-i18n="reactionsTitle">Chemical Reactions</h1>
+                <p class="module-desc" data-i18n="reactionsDesc">Enter a chemical equation to explore reactants, products, and reaction mechanisms.</p>
+            </div>
+            <div class="reaction-input-area glass-card">
+                <div class="input-row">
+                    <div class="formula-input-wrapper glass-input">
+                        <input type="text" id="reactionInput" data-i18n-placeholder="reactionPlaceholder" placeholder="Enter reaction, e.g. HCl + NaOH" autocomplete="off">
+                        <div class="input-feedback"></div>
+                    </div>
+                    <button class="primary-btn glass-btn" id="reactionSubmit" data-i18n="analyze">Analyze</button>
+                </div>
+                <div class="quick-reactions">
+                    <span class="quick-label" data-i18n="quickExamples">Quick examples:</span>
+                    <button class="chip glass-chip" data-reaction="HCl + NaOH">HCl + NaOH</button>
+                    <button class="chip glass-chip" data-reaction="AgNO3 + NaCl">AgNO3 + NaCl</button>
+                    <button class="chip glass-chip" data-reaction="H2 + O2">H2 + O2</button>
+                    <button class="chip glass-chip" data-reaction="CH4 + O2">CH4 + O2</button>
+                    <button class="chip glass-chip" data-reaction="CaCO3 + HCl">CaCO3 + HCl</button>
+                    <button class="chip glass-chip" data-reaction="Fe + CuSO4">Fe + CuSO4</button>
+                    <button class="chip glass-chip" data-reaction="Na2CO3 + HCl">Na2CO3 + HCl</button>
+                    <button class="chip glass-chip" data-reaction="Zn + H2SO4">Zn + H2SO4</button>
+                </div>
+            </div>
+            <div id="reactionResult" class="result-area"></div>
+        </section>
+
+        <!-- Compound Analyzer module -->
+        <section class="module-page" id="page-analyzer">
+            <div class="module-header">
+                <h1 class="module-title" data-i18n="analyzerTitle">Compound Analyzer</h1>
+                <p class="module-desc" data-i18n="analyzerDesc">Input a chemical formula to analyze its molecular structure and properties.</p>
+            </div>
+            <div class="reaction-input-area glass-card">
+                <div class="input-row">
+                    <div class="formula-input-wrapper glass-input">
+                        <input type="text" id="compoundInput" data-i18n-placeholder="compoundPlaceholder" placeholder="Enter formula, e.g. H2SO4" autocomplete="off">
+                        <div class="input-feedback"></div>
+                    </div>
+                    <button class="primary-btn glass-btn" id="compoundSubmit" data-i18n="analyze">Analyze</button>
+                </div>
+                <div class="quick-reactions">
+                    <span class="quick-label" data-i18n="quickExamples">Quick examples:</span>
+                    <button class="chip glass-chip" data-compound="H2SO4">H2SO4</button>
+                    <button class="chip glass-chip" data-compound="NaOH">NaOH</button>
+                    <button class="chip glass-chip" data-compound="NH3">NH3</button>
+                    <button class="chip glass-chip" data-compound="CuSO4">CuSO4</button>
+                    <button class="chip glass-chip" data-compound="KMnO4">KMnO4</button>
+                    <button class="chip glass-chip" data-compound="CaCO3">CaCO3</button>
+                    <button class="chip glass-chip" data-compound="HCl">HCl</button>
+                    <button class="chip glass-chip" data-compound="C2H5OH">C2H5OH</button>
+                </div>
+            </div>
+            <div id="compoundResult" class="result-area"></div>
+
+            <!-- 3D Molecular Viewer (integrated) -->
+            <div id="compound3dSection" class="viewer-3d-container glass-card" style="display:none; margin-top: 16px;">
+                <div class="viewer-3d-header" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 0;">
+                    <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary);" data-i18n="molecularStructure">3D Molecular Structure</h3>
+                    <div class="viewer-controls" style="position: static;">
+                        <button class="viewer-ctrl-btn glass-btn" id="autoRotateBtn" data-i18n-title="autoRotate" title="Auto Rotate">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 1C4.13 1 1 4.13 1 8s3.13 7 7 7 7-3.13 7-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                                <path d="M15 1v4h-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="viewer-ctrl-btn glass-btn" id="resetViewBtn" data-i18n-title="resetView" title="Reset View">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                                <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.5"/>
+                            </svg>
+                        </button>
+                        <button class="viewer-ctrl-btn glass-btn" id="toggleOrbitalsBtn" data-i18n-title="toggleOrbitals" title="Toggle Orbitals">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6" transform="rotate(60 8 8)"/>
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6" transform="rotate(120 8 8)"/>
+                                <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.4"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="molecule3dCanvas" class="viewer-3d-canvas"></div>
+            </div>
+            <div id="molecule3dInfo" class="result-area"></div>
+        </section>
+
+        <!-- Organic Chemistry module -->
+        <section class="module-page" id="page-organic">
+            <div class="module-header">
+                <h1 class="module-title" data-i18n="organicTitle">Organic Chemistry</h1>
+                <p class="module-desc" data-i18n="organicDesc">Explore organic compounds, functional groups, and molecular structures.</p>
+            </div>
+            <div class="reaction-input-area glass-card">
+                <div class="input-row">
+                    <div class="formula-input-wrapper glass-input">
+                        <input type="text" id="organicInput" data-i18n-placeholder="organicPlaceholder" placeholder="Enter formula, e.g. CH3COOH" autocomplete="off">
+                        <div class="input-feedback"></div>
+                    </div>
+                    <button class="primary-btn glass-btn" id="organicSubmit" data-i18n="analyze">Analyze</button>
+                </div>
+                <div class="quick-reactions">
+                    <span class="quick-label" data-i18n="quickExamples">Quick examples:</span>
+                    <button class="chip glass-chip" data-organic="CH4">CH4 Methane</button>
+                    <button class="chip glass-chip" data-organic="C2H4">C2H4 Ethylene</button>
+                    <button class="chip glass-chip" data-organic="C2H2">C2H2 Acetylene</button>
+                    <button class="chip glass-chip" data-organic="C2H5OH">C2H5OH Ethanol</button>
+                    <button class="chip glass-chip" data-organic="CH3COOH">CH3COOH Acetic acid</button>
+                    <button class="chip glass-chip" data-organic="C6H6">C6H6 Benzene</button>
+                    <button class="chip glass-chip" data-organic="CH3CHO">CH3CHO Acetaldehyde</button>
+                    <button class="chip glass-chip" data-organic="CH3COCH3">CH3COCH3 Acetone</button>
+                    <button class="chip glass-chip" data-organic="CH3COOC2H5">CH3COOC2H5 Ethyl acetate</button>
+                    <button class="chip glass-chip" data-organic="CH3NH2">CH3NH2 Methylamine</button>
+                </div>
+            </div>
+            <div id="organicResult" class="result-area"></div>
+        </section>
+
+    </main>
+
+    <script src="reactions.js"></script>
+    <script src="compounds.js"></script>
+    <script src="organic.js"></script>
+    <script src="molecules.js"></script>
+    <script src="chem-parser.js"></script>
+    <script src="chem-inference.js"></script>
+    <script src="chem-compounds-expanded.js"></script>
+    <script src="chem-reactions-expanded.js"></script>
+    <script src="chem-database-generator.js"></script>
+    <script src="chem-reaction-generator.js"></script>
+    <script src="chem-massive-compounds.js"></script>
+    <script src="chem-fallback.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
