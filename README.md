@@ -1,148 +1,148 @@
-# Chemical Laboratory
+# 化学实验室
 
-An elegant, interactive chemistry web application featuring reaction analysis, compound information, organic chemistry exploration, and 3D molecular visualization.
+一个优雅的交互式化学学习应用，支持反应分析、化合物信息查询、有机化学探索和3D分子可视化。
 
-![Version](https://img.shields.io/badge/version-1.0.0-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
+![版本](https://img.shields.io/badge/version-1.0.0-blue)
+![许可证](https://img.shields.io/badge/license-MIT-green)
 
-## Features
+## 功能介绍
 
-### 🧪 Chemical Reactions
-- Explore and analyze chemical reactions
-- View balanced equations, reaction types, and principles
-- Understand reaction mechanisms and conditions
-- See ionic equations and product information
+### 🧪 化学反应
+- 探索和分析化学反应
+- 查看配平方程式、反应类型和原理
+- 了解反应机理和条件
+- 查看离子方程式和产物信息
 
-### 🔬 Compound Analyzer
-- Input chemical formulas to get detailed information
-- View molecular mass, classification, and properties
-- Learn about acid/base characteristics, solubility, and more
-- 3D molecular structure visualization for supported compounds
+### 🔬 化合物分析
+- 输入化学式获取详细信息
+- 查看分子质量、分类和属性
+- 了解酸碱特性、溶解度等
+- 支持的化合物可查看3D分子结构
 
-### 🧬 Organic Chemistry
-- Explore organic compounds and functional groups
-- Understand bond structures and hybridization
-- View properties and common reactions
-- Learn about alkane, alkene, alkyne, alcohol, and more
+### 🧬 有机化学
+- 探索有机化合物和官能团
+- 了解键结构和杂化
+- 查看属性和常见反应
+- 学习烷烃、烯烃、炔烃、醇等
 
-### 🎨 3D Molecular Viewer
-- Interactive 3D visualization using Three.js
-- Rotate, zoom, and pan molecular structures
-- Toggle auto-rotation and orbital visualization
-- View molecular geometry and bonds in 3D space
+### 🎨 3D分子查看器
+- 使用Three.js进行交互式3D可视化
+- 旋转、缩放和平移分子结构
+- 切换自动旋转和轨道可视化
+- 3D空间中查看分子几何和键
 
-### 🌐 Bilingual Support (Chinese/English)
-- Full English and Chinese language support
-- Dynamic language switching
-- Elegant, Apple-inspired UI design
+### 🌐 双语支持（中文/英文）
+- 完整的中英文语言支持
+- 动态语言切换
+- Apple风格的优雅UI设计
 
-### 🎯 Modern UI Features
-- Apple-style glass/morphism design
-- Dark and light theme support
-- Smooth animations and transitions
-- Responsive design for mobile and desktop
-- Interactive controls and visual feedback
+### 🎯 现代UI特性
+- Apple风格的玻璃态设计
+- 深色/浅色主题支持
+- 流畅的动画和过渡效果
+- 响应式设计支持移动和桌面
+- 交互式控件和视觉反馈
 
-### 📱 Responsive Design
-- Works on desktop and mobile devices
-- Touch support for mobile screens
+### 📱 响应式设计
+- 在桌面和移动设备上都能工作
+- 移动屏幕的触摸支持
 
-## Getting Started
+## 快速开始
 
-### Installation
+### 安装
 
-This is a static web application, so no complex installation is required!
+这是一个静态Web应用，无需复杂安装！
 
-1. **Clone or download** the repository
-2. **Open** `index.html` in a modern web browser
-3. **Start exploring**!
+1. **克隆或下载** 仓库
+2. **用现代浏览器** 打开 `index.html`
+3. **开始探索**！
 
-Alternatively, you can serve it with a simple HTTP server:
+或者，您可以使用简单的HTTP服务器：
 
 ```bash
-# If you have Python installed
+# 如果安装了Python
 python -m http.server 8000
 
-# Or with Node.js (http-server)
+# 或者用Node.js (http-server)
 npx http-server
 ```
 
-Then open `http://localhost:8000` in your browser.
+然后在浏览器中打开 `http://localhost:8000`。
 
-## Project Structure
+## 项目结构
 
 ```
-Chemical Laboratory/
-├── index.html                   # Main HTML entry point
-├── style.css                    # Stylesheet
-├── app.js                       # Main application logic
-├── reactions.js                 # Reactions database module
-├── compounds.js                 # Compounds database module
-├── organic.js                   # Organic chemistry database module
-├── molecules.js                 # 3D molecules module
-├── chem-parser.js               # Chemical formula parser
-├── chem-inference.js            # Chemical inference engine
-├── chem-fallback.js             # Fallback data source system
-├── chem-compounds-expanded.js   # Expanded compounds database
-├── chem-reactions-expanded.js   # Expanded reactions database
-└── README.md                    # This file
+化学实验室/
+├── index.html                   # 主HTML入口
+├── style.css                    # 样式表
+├── app.js                       # 主应用逻辑
+├── reactions.js                 # 反应数据库模块
+├── compounds.js                 # 化合物数据库模块
+├── organic.js                   # 有机化学数据库模块
+├── molecules.js                 # 3D分子模块
+├── chem-parser.js               # 化学式解析器
+├── chem-inference.js            # 化学推理引擎
+├── chem-fallback.js             # 备用数据源系统
+├── chem-compounds-expanded.js   # 扩展化合物数据库
+├── chem-reactions-expanded.js   # 扩展反应数据库
+└── README.md                    # 本文档
 ```
 
-## Usage
+## 使用说明
 
-### Reaction Analysis
-1. Go to the "Reactions" tab
-2. Enter a chemical reaction (e.g., "HCl + NaOH")
-3. Or click one of the quick example chips
-4. Click "Analyze" to view detailed information
+### 反应分析
+1. 进入"化学反应"标签页
+2. 输入化学反应（例如："HCl + NaOH"）
+3. 或点击快速示例芯片
+4. 点击"分析"查看详细信息
 
-### Compound Analysis
-1. Go to the "Compound Analyzer" tab
-2. Enter a chemical formula (e.g., "H2SO4")
-3. Or click one of the quick examples
-4. View 3D structure if available in the database
+### 化合物分析
+1. 进入"化合物分析"标签页
+2. 输入化学式（例如："H2SO4"）
+3. 或点击快速示例
+4. 如数据库中有，查看3D结构
 
-### Organic Chemistry
-1. Go to the "Organic Chemistry" tab
-2. Enter an organic compound formula (e.g., "CH4")
-3. Explore functional groups and properties
+### 有机化学
+1. 进入"有机化学"标签页
+2. 输入有机化合物分子式（例如："CH4"）
+3. 探索官能团和属性
 
-### Controls
-- 🌍 **Language Toggle**: Switch between English and Chinese
-- 🌗 **Theme Toggle**: Switch between light/dark mode
-- 🔍 **Search**: Search for compounds, reactions, and molecules
+### 控制功能
+- 🌍 **语言切换**：在中英文之间切换
+- 🌗 **主题切换**：在浅色/深色模式间切换
+- 🔍 **搜索**：搜索化合物、反应和分子
 
-## Technologies Used
+## 技术栈
 
-- **HTML5 & CSS3**: Modern semantic markup and styling
-- **Vanilla JavaScript**: No framework dependencies
-- **Three.js**: 3D molecular visualization
-- **Font Awesome style icons**: Beautiful SVG icons
-- **LocalStorage**: For saving user preferences
+- **HTML5 & CSS3**：现代语义化标记和样式
+- **原生JavaScript**：不依赖框架
+- **Three.js**：3D分子可视化
+- **Font Awesome风格图标**：美观的SVG图标
+- **LocalStorage**：保存用户偏好
 
-## Browser Support
+## 浏览器支持
 
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
+- Chrome/Edge (最新版)
+- Firefox (最新版)
+- Safari (最新版)
 
-## Contributing
+## 贡献
 
-Contributions are welcome! Feel free to:
-- Add new compounds and reactions to the database
-- Improve the UI/UX design
-- Fix bugs or add new features
-- Add more chemical data sources
+欢迎贡献！您可以：
+- 添加新的化合物和反应到数据库
+- 改进UI/UX设计
+- 修复错误或添加新功能
+- 添加更多化学数据源
 
-## License
+## 许可证
 
-MIT License - feel free to use this project for learning and development!
+MIT许可证 - 欢迎用于学习和开发！
 
-## Author
+## 作者
 
-Chemical Laboratory Web Application
+化学实验室Web应用
 
-## Acknowledgments
+## 致谢
 
-- Inspired by Apple's design language
-- Chemical data from various educational sources
+- 受Apple设计语言启发
+- 化学数据来自多种教育资源
