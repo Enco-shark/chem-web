@@ -29,11 +29,12 @@ const ChemFallback = (() => {
         return cache[type]?.[key] || null;
     }
 
-    function setCache(type, key, data, source) {
+    function setCache(type, key, data, source, matchedKey) {
         if (!cache[type]) cache[type] = {};
         cache[type][key] = {
             data,
             source,
+            matchedKey: matchedKey || null,
             timestamp: Date.now(),
         };
     }
@@ -58,14 +59,14 @@ const ChemFallback = (() => {
 
         // Direct match
         if (CompoundsDB[formula]) {
-            return { data: CompoundsDB[formula], source: 'local' };
+            return { data: CompoundsDB[formula], source: 'local', matchedKey: formula };
         }
 
         // Case-insensitive match
         const upper = formula.toUpperCase();
         for (const key of Object.keys(CompoundsDB)) {
             if (key.toUpperCase() === upper) {
-                return { data: CompoundsDB[key], source: 'local' };
+                return { data: CompoundsDB[key], source: 'local', matchedKey: key };
             }
         }
 
@@ -74,7 +75,7 @@ const ChemFallback = (() => {
         for (const key of Object.keys(CompoundsDB)) {
             const c = CompoundsDB[key];
             if (c.nameEN?.toLowerCase().includes(lower) || c.nameCN?.includes(formula)) {
-                return { data: c, source: 'local' };
+                return { data: c, source: 'local', matchedKey: key };
             }
         }
 
@@ -116,17 +117,57 @@ const ChemFallback = (() => {
         return null;
     }
 
-    // Source 4: PubChem API
+    // Source 4: PubChem API (via creb-pubchem-js with fallback to raw API)
     async function tryPubChemCompound(formula) {
-        if (typeof PubChemAPI === 'undefined') return null;
-
-        try {
-            const data = await PubChemAPI.fetchFull(formula);
-            if (data) {
-                return { data, source: 'pubchem' };
+        // Primary: use creb-pubchem-js if available
+        if (typeof PubChemJS !== 'undefined' && PubChemJS.Compound) {
+            try {
+                let compounds = await PubChemJS.Compound.fromFormula(formula);
+                if (!compounds || compounds.length === 0) {
+                    compounds = await PubChemJS.Compound.fromName(formula);
+                }
+                if (compounds && compounds.length > 0) {
+                    const c = compounds[0];
+                    return {
+                        data: {
+                            cid: c.cid,
+                            formula: c.molecularFormula || formula,
+                            molecularWeight: c.molecularWeight || 0,
+                            iupacName: c.iupacName || '',
+                            smiles: c.smiles || '',
+                            exactMass: c.exactMass || 0,
+                            hBondDonors: c.hBondDonorCount || 0,
+                            hBondAcceptors: c.hBondAcceptorCount || 0,
+                            tpsa: c.tpsa || 0,
+                            complexity: c.complexity || 0,
+                            charge: c.charge || 0,
+                            xlogp: c.xlogp || 0,
+                            inchiKey: c.inchiKey || '',
+                            description: c.description || '',
+                            synonyms: c.synonyms || [],
+                            structureURL: `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${c.cid}/PNG`,
+                            pubchemURL: `https://pubchem.ncbi.nlm.nih.gov/compound/${c.cid}`,
+                            atoms: c.atoms || [],
+                            bonds: c.bonds || [],
+                        },
+                        source: 'pubchem',
+                    };
+                }
+            } catch (e) {
+                console.warn('creb-pubchem error, falling back to raw API:', e.message);
             }
-        } catch (e) {
-            console.warn('PubChem error:', e);
+        }
+
+        // Fallback: use hand-rolled PubChemAPI
+        if (typeof PubChemAPI !== 'undefined') {
+            try {
+                const data = await PubChemAPI.fetchFull(formula);
+                if (data) {
+                    return { data, source: 'pubchem' };
+                }
+            } catch (e) {
+                console.warn('PubChem API error:', e.message);
+            }
         }
 
         return null;
@@ -177,6 +218,11 @@ const ChemFallback = (() => {
     // Reaction Sources
     // ==========================================
 
+    // Strip leading stoichiometric coefficient from a formula (e.g. "2KClO3" → "KClO3")
+    function stripCoeff(formula) {
+        return formula.replace(/^(\d+)\s*/, '');
+    }
+
     // Source 1: Local Reaction Database
     async function tryLocalReaction(input) {
         if (typeof ReactionsDB === 'undefined') return null;
@@ -185,27 +231,42 @@ const ChemFallback = (() => {
 
         // Direct match
         if (ReactionsDB[clean]) {
-            return { data: ReactionsDB[clean], source: 'local' };
+            return { data: ReactionsDB[clean], source: 'local', matchedKey: clean };
         }
 
-        // Normalized match
-        const normalized = clean
-            .replace(/→/g, '+').replace(/->/g, '+').replace(/=/g, '+')
+        // Extract reactant side from full equation
+        const arrowMatch = clean.match(/^(.+?)(?:→|->|=| yields | gives )(.+)$/i);
+        const reactantStr = arrowMatch ? arrowMatch[1] : clean;
+        const normalized = reactantStr
             .split('+').map(s => s.trim()).filter(Boolean).sort().join(' + ');
 
+        // 1) Exact normalized match (user input vs key, no coefficient stripping)
         for (const key of Object.keys(ReactionsDB)) {
             const keyNorm = key.split('+').map(s => s.trim()).sort().join(' + ');
             if (keyNorm === normalized) {
-                return { data: ReactionsDB[key], source: 'local' };
+                return { data: ReactionsDB[key], source: 'local', matchedKey: key };
             }
         }
 
-        // Partial match
+        // 2) Reactants-based match: compare stripped user input against key's reactants array
+        const inputFormulas = reactantStr.split('+').map(s => stripCoeff(s.trim()).toLowerCase()).filter(Boolean);
         for (const key of Object.keys(ReactionsDB)) {
-            const keyParts = key.split('+').map(s => s.trim().toLowerCase());
-            const inputParts = clean.split('+').map(s => s.trim().toLowerCase()).filter(Boolean);
-            if (inputParts.every(p => keyParts.includes(p)) && inputParts.length === keyParts.length) {
-                return { data: ReactionsDB[key], source: 'local' };
+            const reaction = ReactionsDB[key];
+            if (!reaction.reactants) continue;
+            const reactantNames = reaction.reactants.map(r => r.toLowerCase());
+            if (inputFormulas.length === reactantNames.length &&
+                inputFormulas.every(f => reactantNames.includes(f))) {
+                return { data: ReactionsDB[key], source: 'local', matchedKey: key };
+            }
+        }
+
+        // 3) Partial match (strip coefficients from both sides)
+        for (const key of Object.keys(ReactionsDB)) {
+            const keyParts = key.split('+').map(s => stripCoeff(s.trim()).toLowerCase());
+            const inputParts = reactantStr.split('+').map(s => stripCoeff(s.trim()).toLowerCase()).filter(Boolean);
+            if (inputParts.length > 0 && inputParts.length === keyParts.length &&
+                inputParts.every(p => keyParts.includes(p))) {
+                return { data: ReactionsDB[key], source: 'local', matchedKey: key };
             }
         }
 
@@ -242,8 +303,6 @@ const ChemFallback = (() => {
         } = options;
 
         const clean = formula.trim();
-        const lang = document.documentElement.getAttribute('data-lang') || 'en';
-        const isCN = lang === 'zh';
 
         // Check cache first
         if (useCache) {
@@ -253,6 +312,7 @@ const ChemFallback = (() => {
                     ...cached.data,
                     _source: cached.source,
                     _cached: true,
+                    _matchedKey: cached.matchedKey || null,
                 };
             }
         }
@@ -274,12 +334,13 @@ const ChemFallback = (() => {
                 const result = await sourceFn(clean);
                 if (result) {
                     // Cache the result
-                    setCache('compounds', clean, result.data, result.source);
+                    setCache('compounds', clean, result.data, result.source, result.matchedKey);
 
                     return {
                         ...result.data,
                         _source: result.source,
                         _sourceInfo: SOURCES[result.source],
+                        _matchedKey: result.matchedKey || null,
                     };
                 }
             } catch (e) {
@@ -301,8 +362,6 @@ const ChemFallback = (() => {
         } = options;
 
         const clean = input.trim();
-        const lang = document.documentElement.getAttribute('data-lang') || 'en';
-        const isCN = lang === 'zh';
 
         // Check cache first
         if (useCache) {
@@ -312,6 +371,7 @@ const ChemFallback = (() => {
                     ...cached.data,
                     _source: cached.source,
                     _cached: true,
+                    _matchedKey: cached.matchedKey || null,
                 };
             }
         }
@@ -330,12 +390,13 @@ const ChemFallback = (() => {
                 const result = await sourceFn(clean);
                 if (result) {
                     // Cache the result
-                    setCache('reactions', clean, result.data, result.source);
+                    setCache('reactions', clean, result.data, result.source, result.matchedKey);
 
                     return {
                         ...result.data,
                         _source: result.source,
                         _sourceInfo: SOURCES[result.source],
+                        _matchedKey: result.matchedKey || null,
                     };
                 }
             } catch (e) {
@@ -384,12 +445,6 @@ const ChemFallback = (() => {
         const lang = document.documentElement.getAttribute('data-lang') || 'en';
         const isCN = lang === 'zh';
 
-        // Show loading state
-        const loadingHtml = `<div class="pubchem-loading">
-            <div class="loading-spinner"></div>
-            <span>${isCN ? '正在查询...' : 'Searching...'}</span>
-        </div>`;
-
         // Try multi-source lookup
         const result = await lookupCompound(input, {
             sources: ['local', 'parser', 'inference', 'pubchem'],
@@ -433,13 +488,15 @@ const ChemFallback = (() => {
     // ==========================================
 
     function renderLocalCompoundResult(compound) {
-        // Use existing renderCompoundResult function
         if (typeof renderCompoundResult === 'function') {
-            // Find the key in CompoundsDB
-            for (const [key, value] of Object.entries(CompoundsDB || {})) {
-                if (value === compound) {
-                    return renderCompoundResult(key);
-                }
+            // Use the matched key passed through from lookup
+            if (compound._matchedKey) {
+                return renderCompoundResult(compound._matchedKey);
+            }
+            // Fallback: find by formula
+            const formula = compound.formula;
+            if (formula && typeof CompoundsDB !== 'undefined' && CompoundsDB[formula]) {
+                return renderCompoundResult(formula);
             }
         }
         return renderGenericCompoundResult(compound);
@@ -565,14 +622,10 @@ const ChemFallback = (() => {
         let renderedResult = '';
 
         if (source === 'local') {
-            // Use existing renderReactionResult
             if (typeof renderReactionResult === 'function') {
-                // Find the key
-                for (const [key, value] of Object.entries(ReactionsDB || {})) {
-                    if (value === result) {
-                        renderedResult = renderReactionResult(key);
-                        break;
-                    }
+                // Use the matched key passed through from lookup
+                if (result._matchedKey) {
+                    renderedResult = renderReactionResult(result._matchedKey);
                 }
             }
             if (!renderedResult) {

@@ -144,48 +144,35 @@ function toggleLanguage() {
 
 // Re-render visible results when language changes
 function refreshVisibleResults() {
-    // Check if there's a visible reaction result
+    // Re-render reaction result
     const reactionResult = document.getElementById('reactionResult');
     if (reactionResult && reactionResult.innerHTML.trim()) {
         const input = document.getElementById('reactionInput');
         if (input && input.value.trim()) {
-            // Use cached result if available, otherwise re-analyze
-            const cached = ChemFallback?.getCached('reactions', input.value.trim());
-            if (cached) {
-                const source = cached.source;
-                if (source === 'local') {
-                    reactionResult.innerHTML = analyzeReaction(input.value);
-                } else {
-                    reactionResult.innerHTML = analyzeReactionUnified(input.value);
+            const val = input.value.trim();
+            ChemFallback.analyzeReactionUnified(val).then(result => {
+                reactionResult.innerHTML = result;
+            }).catch(() => {
+                // Fallback to local-only analysis
+                if (typeof analyzeReaction === 'function') {
+                    reactionResult.innerHTML = analyzeReaction(val);
                 }
-            } else {
-                reactionResult.innerHTML = analyzeReaction(input.value);
-            }
+            });
         }
     }
 
-    // Check if there's a visible compound result
+    // Re-render compound result
     const compoundResult = document.getElementById('compoundResult');
     if (compoundResult && compoundResult.innerHTML.trim()) {
         const input = document.getElementById('compoundInput');
         if (input && input.value.trim()) {
-            // Use cached result if available, otherwise re-analyze
-            const cached = ChemFallback?.getCached('compounds', input.value.trim());
-            if (cached) {
-                const source = cached.source;
-                if (source === 'local') {
-                    const localResult = analyzeCompoundLocal(input.value);
-                    if (localResult) compoundResult.innerHTML = localResult;
-                } else {
-                    // Re-render with unified system to update language
-                    analyzeCompoundUnified(input.value).then(result => {
-                        compoundResult.innerHTML = result;
-                    });
-                }
-            } else {
-                const localResult = analyzeCompoundLocal(input.value);
+            const val = input.value.trim();
+            ChemFallback.analyzeCompoundUnified(val).then(result => {
+                compoundResult.innerHTML = result;
+            }).catch(() => {
+                const localResult = analyzeCompoundLocal(val);
                 if (localResult) compoundResult.innerHTML = localResult;
-            }
+            });
         }
     }
 
@@ -424,21 +411,21 @@ function handleSuggestionClick(type, formula) {
     if (type === 'reaction') {
         switchTab('reactions');
         document.getElementById('reactionInput').value = formula;
-        submitWithFeedback('reactionSubmit', 'reactionResult', () => analyzeReaction(formula), formula);
+        submitWithFeedback('reactionSubmit', 'reactionResult', () => ChemFallback.analyzeReactionUnified(formula), formula);
     } else if (type === 'compound' || type === 'molecule') {
         switchTab('analyzer');
         document.getElementById('compoundInput').value = formula;
-        submitWithFeedback('compoundSubmit', 'compoundResult', () => analyzeCompoundUnified(formula), formula);
+        submitWithFeedback('compoundSubmit', 'compoundResult', () => ChemFallback.analyzeCompoundUnified(formula), formula);
         renderCompound3D(formula);
     } else if (type === 'organic') {
         switchTab('organic');
         document.getElementById('organicInput').value = formula;
         submitWithFeedback('organicSubmit', 'organicResult', () => analyzeOrganic(formula), formula);
-        renderCompound3D(formula);
+        renderOrganic3D(formula);
     } else if (type === 'pubchem') {
         switchTab('analyzer');
         document.getElementById('compoundInput').value = formula;
-        submitWithFeedback('compoundSubmit', 'compoundResult', () => analyzeCompoundUnified(formula), formula);
+        submitWithFeedback('compoundSubmit', 'compoundResult', () => ChemFallback.analyzeCompoundUnified(formula), formula);
         renderCompound3D(formula);
     }
 }
@@ -570,7 +557,10 @@ function renderCompound3D(formula) {
     const section = document.getElementById('compound3dSection');
     if (!section) return;
 
-    // Check if this formula exists in the 3D molecules database
+    // Hide organic 3D section when compound 3D is shown
+    const organicSection = document.getElementById('organic3dSection');
+    if (organicSection) organicSection.style.display = 'none';
+
     const clean = formula.trim().toUpperCase();
     let matched = null;
 
@@ -585,17 +575,47 @@ function renderCompound3D(formula) {
 
     if (matched) {
         section.style.display = 'block';
-        // Render the 3D molecule
         const molecule = renderMolecule3D(matched);
         if (molecule) {
             const info = renderMolecule3DInfo(matched);
             document.getElementById('molecule3dInfo').innerHTML = info;
         }
-        // Reset auto-rotate button state
         document.getElementById('autoRotateBtn')?.classList.add('active');
     } else {
         section.style.display = 'none';
         document.getElementById('molecule3dInfo').innerHTML = '';
+    }
+}
+
+function renderOrganic3D(formula) {
+    const section = document.getElementById('organic3dSection');
+    if (!section) return;
+
+    const clean = formula.trim().toUpperCase();
+    let matched = null;
+
+    if (typeof MoleculesDB !== 'undefined') {
+        for (const key of Object.keys(MoleculesDB)) {
+            if (key.toUpperCase() === clean) {
+                matched = key;
+                break;
+            }
+        }
+    }
+
+    if (matched) {
+        section.style.display = 'block';
+        const molecule = renderMolecule3D(matched, 'organic3dCanvas');
+        if (molecule) {
+            const info = renderMolecule3DInfo(matched);
+            document.getElementById('organic3dInfo').innerHTML = info;
+        }
+        // Also hide compound 3D section if visible
+        const compoundSection = document.getElementById('compound3dSection');
+        if (compoundSection) compoundSection.style.display = 'none';
+    } else {
+        section.style.display = 'none';
+        document.getElementById('organic3dInfo').innerHTML = '';
     }
 }
 
@@ -704,7 +724,7 @@ function initEventListeners() {
     document.getElementById('reactionSubmit')?.addEventListener('click', () => {
         const input = document.getElementById('reactionInput').value;
         if (input.trim()) {
-            submitWithFeedback('reactionSubmit', 'reactionResult', () => analyzeReactionUnified(input), input);
+            submitWithFeedback('reactionSubmit', 'reactionResult', () => ChemFallback.analyzeReactionUnified(input), input);
         }
     });
 
@@ -712,7 +732,7 @@ function initEventListeners() {
         if (e.key === 'Enter') {
             const input = e.target.value;
             if (input.trim()) {
-                submitWithFeedback('reactionSubmit', 'reactionResult', () => analyzeReactionUnified(input), input);
+                submitWithFeedback('reactionSubmit', 'reactionResult', () => ChemFallback.analyzeReactionUnified(input), input);
             }
         }
     });
@@ -721,7 +741,7 @@ function initEventListeners() {
     document.getElementById('compoundSubmit')?.addEventListener('click', () => {
         const input = document.getElementById('compoundInput').value;
         if (input.trim()) {
-            submitWithFeedback('compoundSubmit', 'compoundResult', () => analyzeCompoundUnified(input), input);
+            submitWithFeedback('compoundSubmit', 'compoundResult', () => ChemFallback.analyzeCompoundUnified(input), input);
             renderCompound3D(input.trim());
         }
     });
@@ -730,7 +750,7 @@ function initEventListeners() {
         if (e.key === 'Enter') {
             const input = e.target.value;
             if (input.trim()) {
-                submitWithFeedback('compoundSubmit', 'compoundResult', () => analyzeCompoundUnified(input), input);
+                submitWithFeedback('compoundSubmit', 'compoundResult', () => ChemFallback.analyzeCompoundUnified(input), input);
                 renderCompound3D(input.trim());
             }
         }
@@ -741,7 +761,7 @@ function initEventListeners() {
         const input = document.getElementById('organicInput').value;
         if (input.trim()) {
             submitWithFeedback('organicSubmit', 'organicResult', () => analyzeOrganic(input), input);
-            renderCompound3D(input.trim());
+            renderOrganic3D(input.trim());
         }
     });
 
@@ -750,22 +770,31 @@ function initEventListeners() {
             const input = e.target.value;
             if (input.trim()) {
                 submitWithFeedback('organicSubmit', 'organicResult', () => analyzeOrganic(input), input);
-                renderCompound3D(input.trim());
+                renderOrganic3D(input.trim());
             }
         }
     });
 
-    // 3D viewer controls
+    // 3D viewer controls (compound)
     document.getElementById('autoRotateBtn')?.addEventListener('click', () => {
         const state = toggleAutoRotation();
         document.getElementById('autoRotateBtn')?.classList.toggle('active', state);
     });
-
     document.getElementById('resetViewBtn')?.addEventListener('click', resetMoleculeView);
-
     document.getElementById('toggleOrbitalsBtn')?.addEventListener('click', () => {
         const state = toggleOrbitals();
         document.getElementById('toggleOrbitalsBtn')?.classList.toggle('active', state);
+    });
+
+    // 3D viewer controls (organic)
+    document.getElementById('autoRotateBtn2')?.addEventListener('click', () => {
+        const state = toggleAutoRotation();
+        document.getElementById('autoRotateBtn2')?.classList.toggle('active', state);
+    });
+    document.getElementById('resetViewBtn2')?.addEventListener('click', resetMoleculeView);
+    document.getElementById('toggleOrbitalsBtn2')?.addEventListener('click', () => {
+        const state = toggleOrbitals();
+        document.getElementById('toggleOrbitalsBtn2')?.classList.toggle('active', state);
     });
 
     // Quick example chips
@@ -773,7 +802,7 @@ function initEventListeners() {
         chip.addEventListener('click', () => {
             const val = chip.getAttribute('data-reaction');
             document.getElementById('reactionInput').value = val;
-            submitWithFeedback('reactionSubmit', 'reactionResult', () => analyzeReactionUnified(val), val);
+            submitWithFeedback('reactionSubmit', 'reactionResult', () => ChemFallback.analyzeReactionUnified(val), val);
         });
     });
 
@@ -781,7 +810,7 @@ function initEventListeners() {
         chip.addEventListener('click', () => {
             const val = chip.getAttribute('data-compound');
             document.getElementById('compoundInput').value = val;
-            submitWithFeedback('compoundSubmit', 'compoundResult', () => analyzeCompoundUnified(val), val);
+            submitWithFeedback('compoundSubmit', 'compoundResult', () => ChemFallback.analyzeCompoundUnified(val), val);
             renderCompound3D(val);
         });
     });
@@ -791,7 +820,7 @@ function initEventListeners() {
             const val = chip.getAttribute('data-organic');
             document.getElementById('organicInput').value = val;
             submitWithFeedback('organicSubmit', 'organicResult', () => analyzeOrganic(val), val);
-            renderCompound3D(val);
+            renderOrganic3D(val);
         });
     });
 

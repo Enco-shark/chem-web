@@ -368,6 +368,11 @@ body {
     padding: 0;
 }
 
+a.toolbar-btn {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .toolbar-btn:hover {
     color: var(--accent);
 }
@@ -802,6 +807,104 @@ body {
     background: var(--glass-bg);
     color: var(--text-secondary);
     border: 1px solid var(--glass-border);
+}
+
+.tag-clickable {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.tag-clickable:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.reaction-type-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.2s ease;
+}
+.reaction-type-popup {
+    max-width: 480px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    border-radius: 16px;
+    padding: 0;
+    animation: slideUp 0.25s ease;
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-lg);
+}
+.popup-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 12px;
+    border-bottom: 1px solid var(--glass-border);
+}
+.popup-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.popup-close {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.15s;
+}
+.popup-close:hover {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+}
+.popup-body {
+    padding: 16px 24px 24px;
+}
+.popup-desc {
+    margin: 0 0 16px;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+.popup-body h4 {
+    margin: 0 0 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.popup-traits {
+    margin: 0;
+    padding-left: 20px;
+    list-style: disc;
+}
+.popup-traits li {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 /* Equation Steps */

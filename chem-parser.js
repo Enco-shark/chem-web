@@ -162,7 +162,7 @@ const ChemParser = (() => {
             let pos = 0;
 
             function parseGroup() {
-                const result = [];
+                const result = {};
                 while (pos < tokens.length) {
                     if (tokens[pos].type === 'paren' && (tokens[pos].value === '(' || tokens[pos].value === '[')) {
                         pos++; // skip '('

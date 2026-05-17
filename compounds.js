@@ -574,22 +574,22 @@ const PubChemAPI = {
         // Try name → CID
         let cid = null;
         try {
-            const res = await fetch(`${this.BASE}/compound/name/${encoded}/cids/JSON`);
+            const res = await fetch(`${this.BASE}/compound/name/${encoded}/cids/JSON`, { signal: AbortSignal.timeout(8000) });
             if (res.ok) {
                 const data = await res.json();
                 cid = data?.IdentifierList?.CID?.[0];
             }
-        } catch (e) { /* ignore */ }
+        } catch (e) { console.warn('PubChem name search failed:', e.message); }
 
         // If name search failed, try as formula
         if (!cid) {
             try {
-                const res = await fetch(`${this.BASE}/compound/formula/${encoded}/cids/JSON`);
+                const res = await fetch(`${this.BASE}/compound/formula/${encoded}/cids/JSON`, { signal: AbortSignal.timeout(8000) });
                 if (res.ok) {
                     const data = await res.json();
                     cid = data?.IdentifierList?.CID?.[0];
                 }
-            } catch (e) { /* ignore */ }
+            } catch (e) { console.warn('PubChem formula search failed:', e.message); }
         }
 
         return cid;
@@ -604,22 +604,21 @@ const PubChemAPI = {
         ].join(',');
 
         try {
-            const res = await fetch(`${this.BASE}/compound/cid/${cid}/property/${props}/JSON`);
+            const res = await fetch(`${this.BASE}/compound/cid/${cid}/property/${props}/JSON`, { signal: AbortSignal.timeout(8000) });
             if (res.ok) {
                 const data = await res.json();
                 return data?.PropertyTable?.Properties?.[0] || null;
             }
-        } catch (e) { /* ignore */ }
+        } catch (e) { console.warn('PubChem properties fetch failed:', e.message); }
         return null;
     },
 
     async getDescription(cid) {
         try {
-            const res = await fetch(`${this.BASE}/compound/cid/${cid}/description/JSON`);
+            const res = await fetch(`${this.BASE}/compound/cid/${cid}/description/JSON`, { signal: AbortSignal.timeout(8000) });
             if (res.ok) {
                 const data = await res.json();
                 const descs = data?.InformationList?.Information || [];
-                // Find the longest description
                 let desc = '';
                 for (const info of descs) {
                     if (info.Description && info.Description.length > desc.length) {
@@ -628,19 +627,19 @@ const PubChemAPI = {
                 }
                 return desc || null;
             }
-        } catch (e) { /* ignore */ }
+        } catch (e) { console.warn('PubChem description fetch failed:', e.message); }
         return null;
     },
 
     async getSynonyms(cid) {
         try {
-            const res = await fetch(`${this.BASE}/compound/cid/${cid}/synonyms/JSON`);
+            const res = await fetch(`${this.BASE}/compound/cid/${cid}/synonyms/JSON`, { signal: AbortSignal.timeout(8000) });
             if (res.ok) {
                 const data = await res.json();
                 const synonyms = data?.InformationList?.Information?.[0]?.Synonym || [];
                 return synonyms.slice(0, 8);
             }
-        } catch (e) { /* ignore */ }
+        } catch (e) { console.warn('PubChem synonyms fetch failed:', e.message); }
         return [];
     },
 

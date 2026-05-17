@@ -267,6 +267,573 @@ const MoleculesDB = {
         geometryCN: 'C=O周围平面形',
         bondAngle: '~120°',
         hybridization: 'sp2/sp3'
+    },
+
+    // ==========================================
+    // ADDITIONAL 3D MOLECULES
+    // ==========================================
+    'H2O2': {
+        name: 'Hydrogen Peroxide',
+        nameCN: '过氧化氢',
+        atoms: [
+            { element: 'O', x: -0.7, y: 0, z: 0 },
+            { element: 'O', x: 0.7, y: 0, z: 0 },
+            { element: 'H', x: -1.1, y: 0.8, z: 0.3 },
+            { element: 'H', x: 1.1, y: -0.8, z: 0.3 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [1, 3, 1]],
+        geometry: 'Open book (skewed)',
+        geometryCN: '书本形（扭曲）',
+        bondAngle: '94.8° (OOO)',
+        hybridization: 'sp3'
+    },
+    'CH3OH': {
+        name: 'Methanol',
+        nameCN: '甲醇',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 1.2, y: 0.5, z: 0 },
+            { element: 'H', x: 1.9, y: 0.1, z: 0 },
+            { element: 'H', x: -0.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -0.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -0.4, y: -1.0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1]],
+        geometry: 'Tetrahedral at C',
+        geometryCN: 'C处四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'HCHO': {
+        name: 'Formaldehyde',
+        nameCN: '甲醛',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 1.2, y: 0, z: 0 },
+            { element: 'H', x: -0.6, y: 0.9, z: 0 },
+            { element: 'H', x: -0.6, y: -0.9, z: 0 }
+        ],
+        bonds: [[0, 1, 2], [0, 2, 1], [0, 3, 1]],
+        geometry: 'Trigonal planar',
+        geometryCN: '三角平面形',
+        bondAngle: '120°',
+        hybridization: 'sp2'
+    },
+    'CH3CHO': {
+        name: 'Acetaldehyde',
+        nameCN: '乙醛',
+        atoms: [
+            { element: 'C', x: -1.0, y: 0, z: 0 },
+            { element: 'C', x: 0.5, y: 0, z: 0 },
+            { element: 'O', x: 1.3, y: 0.8, z: 0 },
+            { element: 'H', x: -1.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.4, y: -1.0, z: 0 },
+            { element: 'H', x: 0.9, y: -0.9, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 2], [0, 3, 1], [0, 4, 1], [0, 5, 1], [1, 6, 1]],
+        geometry: 'Planar at C=O',
+        geometryCN: 'C=O处平面形',
+        bondAngle: '~120°',
+        hybridization: 'sp2/sp3'
+    },
+    'CH3COCH3': {
+        name: 'Acetone',
+        nameCN: '丙酮',
+        atoms: [
+            { element: 'C', x: -1.5, y: 0, z: 0 },
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 1.5, y: 0, z: 0 },
+            { element: 'O', x: 0, y: 1.2, z: 0 },
+            { element: 'H', x: -1.9, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.9, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.9, y: -1.0, z: 0 },
+            { element: 'H', x: 1.9, y: 0.6, z: 0.8 },
+            { element: 'H', x: 1.9, y: 0.6, z: -0.8 },
+            { element: 'H', x: 1.9, y: -1.0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [1, 3, 2], [0, 4, 1], [0, 5, 1], [0, 6, 1], [2, 7, 1], [2, 8, 1], [2, 9, 1]],
+        geometry: 'Trigonal planar at C=O',
+        geometryCN: 'C=O处三角平面形',
+        bondAngle: '120°',
+        hybridization: 'sp2/sp3'
+    },
+    'HCOOH': {
+        name: 'Formic Acid',
+        nameCN: '甲酸',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 1.0, y: 0.8, z: 0 },
+            { element: 'O', x: 1.0, y: -0.8, z: 0 },
+            { element: 'H', x: 1.7, y: -1.1, z: 0 },
+            { element: 'H', x: -0.7, y: 0.5, z: 0 }
+        ],
+        bonds: [[0, 1, 2], [0, 2, 1], [2, 3, 1], [0, 4, 1]],
+        geometry: 'Planar',
+        geometryCN: '平面形',
+        bondAngle: '~120°',
+        hybridization: 'sp2'
+    },
+    'CH3NH2': {
+        name: 'Methylamine',
+        nameCN: '甲胺',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'N', x: 1.3, y: 0.3, z: 0 },
+            { element: 'H', x: -0.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -0.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -0.4, y: -1.0, z: 0 },
+            { element: 'H', x: 1.8, y: -0.1, z: 0.7 },
+            { element: 'H', x: 1.8, y: -0.1, z: -0.7 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1], [1, 5, 1], [1, 6, 1]],
+        geometry: 'Tetrahedral at C, pyramidal at N',
+        geometryCN: 'C处四面体形，N处三角锥形',
+        bondAngle: '109.5° (C), ~107° (N)',
+        hybridization: 'sp3'
+    },
+    'C6H5OH': {
+        name: 'Phenol',
+        nameCN: '苯酚',
+        atoms: [
+            { element: 'C', x: 1.2, y: 0.7, z: 0 },
+            { element: 'C', x: 1.2, y: -0.7, z: 0 },
+            { element: 'C', x: 0, y: -1.4, z: 0 },
+            { element: 'C', x: -1.2, y: -0.7, z: 0 },
+            { element: 'C', x: -1.2, y: 0.7, z: 0 },
+            { element: 'C', x: 0, y: 1.4, z: 0 },
+            { element: 'O', x: 2.4, y: 1.4, z: 0 },
+            { element: 'H', x: 2.1, y: -1.2, z: 0 },
+            { element: 'H', x: 0, y: -2.5, z: 0 },
+            { element: 'H', x: -2.1, y: -1.2, z: 0 },
+            { element: 'H', x: -2.1, y: 1.2, z: 0 },
+            { element: 'H', x: 0, y: 2.5, z: 0 },
+            { element: 'H', x: 3.0, y: 0.9, z: 0 }
+        ],
+        bonds: [[0, 1, 2], [1, 2, 1], [2, 3, 2], [3, 4, 1], [4, 5, 2], [5, 0, 1], [0, 6, 1], [1, 7, 1], [2, 8, 1], [3, 9, 1], [4, 10, 1], [5, 11, 1], [6, 12, 1]],
+        geometry: 'Planar hexagonal ring',
+        geometryCN: '平面六元环',
+        bondAngle: '120° (ring)',
+        hybridization: 'sp2'
+    },
+    'CH3OCH3': {
+        name: 'Dimethyl Ether',
+        nameCN: '二甲醚',
+        atoms: [
+            { element: 'C', x: -1.2, y: 0, z: 0 },
+            { element: 'O', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 1.2, y: 0, z: 0 },
+            { element: 'H', x: -1.6, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.6, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.6, y: -1.0, z: 0 },
+            { element: 'H', x: 1.6, y: 0.6, z: 0.8 },
+            { element: 'H', x: 1.6, y: 0.6, z: -0.8 },
+            { element: 'H', x: 1.6, y: -1.0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1], [2, 6, 1], [2, 7, 1], [2, 8, 1]],
+        geometry: 'Bent at O',
+        geometryCN: 'O处弯曲形',
+        bondAngle: '111.7° (COC)',
+        hybridization: 'sp3'
+    },
+    'C2H5OC2H5': {
+        name: 'Diethyl Ether',
+        nameCN: '乙醚',
+        atoms: [
+            { element: 'C', x: -2.0, y: 0.5, z: 0 },
+            { element: 'C', x: -0.8, y: 0, z: 0 },
+            { element: 'O', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 0.8, y: 0, z: 0 },
+            { element: 'C', x: 2.0, y: 0.5, z: 0 },
+            { element: 'H', x: -2.4, y: 1.1, z: 0.8 },
+            { element: 'H', x: -2.4, y: 1.1, z: -0.8 },
+            { element: 'H', x: -2.4, y: -0.5, z: 0 },
+            { element: 'H', x: -0.8, y: -0.6, z: 0.8 },
+            { element: 'H', x: -0.8, y: -0.6, z: -0.8 },
+            { element: 'H', x: 0.8, y: -0.6, z: 0.8 },
+            { element: 'H', x: 0.8, y: -0.6, z: -0.8 },
+            { element: 'H', x: 2.4, y: 1.1, z: 0.8 },
+            { element: 'H', x: 2.4, y: 1.1, z: -0.8 },
+            { element: 'H', x: 2.4, y: -0.5, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [2, 3, 1], [3, 4, 1], [0, 5, 1], [0, 6, 1], [0, 7, 1], [1, 8, 1], [1, 9, 1], [3, 10, 1], [3, 11, 1], [4, 12, 1], [4, 13, 1], [4, 14, 1]],
+        geometry: 'Bent at O',
+        geometryCN: 'O处弯曲形',
+        bondAngle: '~112° (COC)',
+        hybridization: 'sp3'
+    },
+    'CH3Cl': {
+        name: 'Chloromethane',
+        nameCN: '氯甲烷',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'Cl', x: 1.4, y: 0, z: 0 },
+            { element: 'H', x: -0.5, y: 0.8, z: 0.5 },
+            { element: 'H', x: -0.5, y: -0.8, z: 0.5 },
+            { element: 'H', x: -0.5, y: 0, z: -0.9 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
+        geometry: 'Tetrahedral',
+        geometryCN: '四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'CH2Cl2': {
+        name: 'Dichloromethane',
+        nameCN: '二氯甲烷',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'Cl', x: 1.4, y: 0.8, z: 0 },
+            { element: 'Cl', x: -1.4, y: 0.8, z: 0 },
+            { element: 'H', x: 0.5, y: -0.6, z: 0.8 },
+            { element: 'H', x: -0.5, y: -0.6, z: -0.8 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
+        geometry: 'Tetrahedral',
+        geometryCN: '四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'C2H5Cl': {
+        name: 'Chloroethane',
+        nameCN: '氯乙烷',
+        atoms: [
+            { element: 'C', x: -1.0, y: 0, z: 0 },
+            { element: 'C', x: 0.5, y: 0, z: 0 },
+            { element: 'Cl', x: 1.5, y: 1.0, z: 0 },
+            { element: 'H', x: -1.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.4, y: -1.0, z: 0 },
+            { element: 'H', x: 0.9, y: -0.6, z: 0.8 },
+            { element: 'H', x: 0.9, y: -0.6, z: -0.8 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1], [1, 6, 1], [1, 7, 1]],
+        geometry: 'Tetrahedral at each C',
+        geometryCN: '每个C处四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+
+    // ==========================================
+    // ADDITIONAL 3D MOLECULES
+    // ==========================================
+    'C3H8': {
+        name: 'Propane',
+        nameCN: '丙烷',
+        atoms: [
+            { element: 'C', x: -1.2, y: 0, z: 0 },
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 1.2, y: 0, z: 0 },
+            { element: 'H', x: -1.6, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.6, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.6, y: -1.0, z: 0 },
+            { element: 'H', x: 0.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: 0.4, y: -0.6, z: 0.8 },
+            { element: 'H', x: 1.6, y: 0.6, z: 0.8 },
+            { element: 'H', x: 1.6, y: 0.6, z: -0.8 },
+            { element: 'H', x: 1.6, y: -1.0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1], [1, 6, 1], [1, 7, 1], [2, 8, 1], [2, 9, 1], [2, 10, 1]],
+        geometry: 'Tetrahedral at each C',
+        geometryCN: '每个C处四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'C3H6': {
+        name: 'Propylene',
+        nameCN: '丙烯',
+        atoms: [
+            { element: 'C', x: -1.2, y: 0, z: 0 },
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 1.2, y: 0.5, z: 0 },
+            { element: 'H', x: -1.6, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.6, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.6, y: -1.0, z: 0 },
+            { element: 'H', x: 0.4, y: -0.9, z: 0 },
+            { element: 'H', x: 1.6, y: 1.1, z: 0 },
+            { element: 'H', x: 1.6, y: 0, z: 0.8 },
+            { element: 'H', x: 1.6, y: 0, z: -0.8 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 2], [0, 3, 1], [0, 4, 1], [0, 5, 1], [1, 6, 1], [2, 7, 1], [2, 8, 1], [2, 9, 1]],
+        geometry: 'Planar at C=C',
+        geometryCN: 'C=C处平面形',
+        bondAngle: '120° (C=C)',
+        hybridization: 'sp2/sp3'
+    },
+    'C3H4': {
+        name: 'Propyne',
+        nameCN: '丙炔',
+        atoms: [
+            { element: 'C', x: -1.5, y: 0, z: 0 },
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'C', x: 1.4, y: 0, z: 0 },
+            { element: 'H', x: -1.9, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.9, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.9, y: -1.0, z: 0 },
+            { element: 'H', x: 2.2, y: 0.5, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 3], [0, 3, 1], [0, 4, 1], [0, 5, 1], [2, 6, 1]],
+        geometry: 'Linear at C≡C',
+        geometryCN: 'C≡C处直线形',
+        bondAngle: '180° (C≡C)',
+        hybridization: 'sp2/sp'
+    },
+    'N2H4': {
+        name: 'Hydrazine',
+        nameCN: '联氨（肼）',
+        atoms: [
+            { element: 'N', x: -0.7, y: 0, z: 0 },
+            { element: 'N', x: 0.7, y: 0, z: 0 },
+            { element: 'H', x: -1.1, y: 0.8, z: 0.3 },
+            { element: 'H', x: -1.1, y: -0.8, z: 0.3 },
+            { element: 'H', x: 1.1, y: 0.8, z: -0.3 },
+            { element: 'H', x: 1.1, y: -0.8, z: -0.3 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [1, 4, 1], [1, 5, 1]],
+        geometry: 'Each N is pyramidal',
+        geometryCN: '每个N为三角锥形',
+        bondAngle: '~112° (NNH)',
+        hybridization: 'sp3'
+    },
+    'HNO3': {
+        name: 'Nitric Acid',
+        nameCN: '硝酸',
+        atoms: [
+            { element: 'N', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 1.0, y: 0.8, z: 0 },
+            { element: 'O', x: -1.0, y: 0.8, z: 0 },
+            { element: 'O', x: 0, y: -1.0, z: 0 },
+            { element: 'H', x: -0.6, y: 1.5, z: 0 }
+        ],
+        bonds: [[0, 1, 2], [0, 2, 1], [0, 3, 1], [2, 4, 1]],
+        geometry: 'Planar',
+        geometryCN: '平面形',
+        bondAngle: '~120°',
+        hybridization: 'sp2'
+    },
+    'NH4Cl': {
+        name: 'Ammonium Chloride',
+        nameCN: '氯化铵',
+        atoms: [
+            { element: 'N', x: 0, y: 0, z: 0 },
+            { element: 'H', x: 0.5, y: 0.5, z: 0.5 },
+            { element: 'H', x: -0.5, y: -0.5, z: 0.5 },
+            { element: 'H', x: -0.5, y: 0.5, z: -0.5 },
+            { element: 'H', x: 0.5, y: -0.5, z: -0.5 },
+            { element: 'Cl', x: 2.0, y: 0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
+        geometry: 'Tetrahedral (NH4+)',
+        geometryCN: '四面体形（NH4+）',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'CaCO3': {
+        name: 'Calcium Carbonate',
+        nameCN: '碳酸钙',
+        atoms: [
+            { element: 'Ca', x: -1.5, y: 0, z: 0 },
+            { element: 'C', x: 0.5, y: 0, z: 0 },
+            { element: 'O', x: 0.5, y: 1.2, z: 0 },
+            { element: 'O', x: 1.5, y: -0.6, z: 0 },
+            { element: 'O', x: -0.5, y: -0.6, z: 0 }
+        ],
+        bonds: [[1, 2, 2], [1, 3, 1], [1, 4, 1]],
+        geometry: 'Trigonal planar (CO3²⁻)',
+        geometryCN: '三角平面形（CO3²⁻）',
+        bondAngle: '120°',
+        hybridization: 'sp2'
+    },
+    'CuSO4': {
+        name: 'Copper Sulfate',
+        nameCN: '硫酸铜',
+        atoms: [
+            { element: 'Cu', x: -1.5, y: 0, z: 0 },
+            { element: 'S', x: 0.5, y: 0, z: 0 },
+            { element: 'O', x: 1.2, y: 1.0, z: 0 },
+            { element: 'O', x: 1.2, y: -1.0, z: 0 },
+            { element: 'O', x: -0.2, y: 0.8, z: 0.5 },
+            { element: 'O', x: -0.2, y: -0.8, z: -0.5 }
+        ],
+        bonds: [[1, 2, 2], [1, 3, 2], [1, 4, 1], [1, 5, 1]],
+        geometry: 'Tetrahedral (SO4²⁻)',
+        geometryCN: '四面体形（SO4²⁻）',
+        bondAngle: '~109.5°',
+        hybridization: 'sp3'
+    },
+    'C6H5NH2': {
+        name: 'Aniline',
+        nameCN: '苯胺',
+        atoms: [
+            { element: 'C', x: 1.2, y: 0.7, z: 0 },
+            { element: 'C', x: 1.2, y: -0.7, z: 0 },
+            { element: 'C', x: 0, y: -1.4, z: 0 },
+            { element: 'C', x: -1.2, y: -0.7, z: 0 },
+            { element: 'C', x: -1.2, y: 0.7, z: 0 },
+            { element: 'C', x: 0, y: 1.4, z: 0 },
+            { element: 'N', x: 2.4, y: 1.4, z: 0 },
+            { element: 'H', x: 2.1, y: -1.2, z: 0 },
+            { element: 'H', x: 0, y: -2.5, z: 0 },
+            { element: 'H', x: -2.1, y: -1.2, z: 0 },
+            { element: 'H', x: -2.1, y: 1.2, z: 0 },
+            { element: 'H', x: 0, y: 2.5, z: 0 },
+            { element: 'H', x: 3.0, y: 1.0, z: 0.5 },
+            { element: 'H', x: 3.0, y: 1.0, z: -0.5 }
+        ],
+        bonds: [[0, 1, 2], [1, 2, 1], [2, 3, 2], [3, 4, 1], [4, 5, 2], [5, 0, 1], [0, 6, 1], [1, 7, 1], [2, 8, 1], [3, 9, 1], [4, 10, 1], [5, 11, 1], [6, 12, 1], [6, 13, 1]],
+        geometry: 'Planar hexagonal ring',
+        geometryCN: '平面六元环',
+        bondAngle: '120° (ring)',
+        hybridization: 'sp2'
+    },
+    'CH3CH2OH': {
+        name: 'Ethanol',
+        nameCN: '乙醇',
+        atoms: [
+            { element: 'C', x: -1.0, y: 0, z: 0 },
+            { element: 'C', x: 0.5, y: 0, z: 0 },
+            { element: 'O', x: 1.2, y: 0.8, z: 0 },
+            { element: 'H', x: 1.8, y: 0.4, z: 0 },
+            { element: 'H', x: -1.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.4, y: -1.0, z: 0 },
+            { element: 'H', x: 0.9, y: -0.6, z: 0.8 },
+            { element: 'H', x: 0.9, y: -0.6, z: -0.8 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [2, 3, 1], [0, 4, 1], [0, 5, 1], [0, 6, 1], [1, 7, 1], [1, 8, 1]],
+        geometry: 'Tetrahedral at each C',
+        geometryCN: '每个C处四面体形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'CH3CH2NH2': {
+        name: 'Ethylamine',
+        nameCN: '乙胺',
+        atoms: [
+            { element: 'C', x: -1.0, y: 0, z: 0 },
+            { element: 'C', x: 0.5, y: 0, z: 0 },
+            { element: 'N', x: 1.3, y: 0.5, z: 0 },
+            { element: 'H', x: -1.4, y: 0.6, z: 0.8 },
+            { element: 'H', x: -1.4, y: 0.6, z: -0.8 },
+            { element: 'H', x: -1.4, y: -1.0, z: 0 },
+            { element: 'H', x: 0.9, y: -0.6, z: 0.8 },
+            { element: 'H', x: 0.9, y: -0.6, z: -0.8 },
+            { element: 'H', x: 1.9, y: 0.1, z: 0.5 },
+            { element: 'H', x: 1.9, y: 0.1, z: -0.5 }
+        ],
+        bonds: [[0, 1, 1], [1, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1], [1, 6, 1], [1, 7, 1], [2, 8, 1], [2, 9, 1]],
+        geometry: 'Tetrahedral at C, pyramidal at N',
+        geometryCN: 'C处四面体形，N处三角锥形',
+        bondAngle: '109.5°',
+        hybridization: 'sp3'
+    },
+    'COCl2': {
+        name: 'Phosgene',
+        nameCN: '光气',
+        atoms: [
+            { element: 'C', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 0, y: 1.2, z: 0 },
+            { element: 'Cl', x: -1.2, y: -0.6, z: 0 },
+            { element: 'Cl', x: 1.2, y: -0.6, z: 0 }
+        ],
+        bonds: [[0, 1, 2], [0, 2, 1], [0, 3, 1]],
+        geometry: 'Trigonal planar',
+        geometryCN: '三角平面形',
+        bondAngle: '120°',
+        hybridization: 'sp2'
+    },
+    'SOCl2': {
+        name: 'Thionyl Chloride',
+        nameCN: '亚硫酰氯',
+        atoms: [
+            { element: 'S', x: 0, y: 0, z: 0 },
+            { element: 'O', x: 0, y: 1.3, z: 0 },
+            { element: 'Cl', x: -1.2, y: -0.6, z: 0.4 },
+            { element: 'Cl', x: 1.2, y: -0.6, z: -0.4 }
+        ],
+        bonds: [[0, 1, 2], [0, 2, 1], [0, 3, 1]],
+        geometry: 'Trigonal pyramidal',
+        geometryCN: '三角锥形',
+        bondAngle: '~106°',
+        hybridization: 'sp3'
+    },
+    'PCl3': {
+        name: 'Phosphorus Trichloride',
+        nameCN: '三氯化磷',
+        atoms: [
+            { element: 'P', x: 0, y: 0.3, z: 0 },
+            { element: 'Cl', x: -1.2, y: -0.4, z: 0.3 },
+            { element: 'Cl', x: 1.2, y: -0.4, z: 0.3 },
+            { element: 'Cl', x: 0, y: -0.4, z: -0.8 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1]],
+        geometry: 'Trigonal pyramidal',
+        geometryCN: '三角锥形',
+        bondAngle: '100°',
+        hybridization: 'sp3'
+    },
+    'SF6': {
+        name: 'Sulfur Hexafluoride',
+        nameCN: '六氟化硫',
+        atoms: [
+            { element: 'S', x: 0, y: 0, z: 0 },
+            { element: 'F', x: 1.0, y: 0, z: 0 },
+            { element: 'F', x: -1.0, y: 0, z: 0 },
+            { element: 'F', x: 0, y: 1.0, z: 0 },
+            { element: 'F', x: 0, y: -1.0, z: 0 },
+            { element: 'F', x: 0, y: 0, z: 1.0 },
+            { element: 'F', x: 0, y: 0, z: -1.0 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1], [0, 5, 1], [0, 6, 1]],
+        geometry: 'Octahedral',
+        geometryCN: '八面体形',
+        bondAngle: '90°',
+        hybridization: 'sp3d2'
+    },
+    'XeF4': {
+        name: 'Xenon Tetrafluoride',
+        nameCN: '四氟化氙',
+        atoms: [
+            { element: 'Xe', x: 0, y: 0, z: 0 },
+            { element: 'F', x: 1.2, y: 0, z: 0 },
+            { element: 'F', x: -1.2, y: 0, z: 0 },
+            { element: 'F', x: 0, y: 0, z: 1.2 },
+            { element: 'F', x: 0, y: 0, z: -1.2 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1], [0, 4, 1]],
+        geometry: 'Square planar',
+        geometryCN: '正方形平面',
+        bondAngle: '90°',
+        hybridization: 'sp3d2'
+    },
+    'BF3': {
+        name: 'Boron Trifluoride',
+        nameCN: '三氟化硼',
+        atoms: [
+            { element: 'B', x: 0, y: 0, z: 0 },
+            { element: 'F', x: 1.1, y: 0, z: 0 },
+            { element: 'F', x: -0.55, y: 0.95, z: 0 },
+            { element: 'F', x: -0.55, y: -0.95, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1], [0, 3, 1]],
+        geometry: 'Trigonal planar',
+        geometryCN: '三角平面形',
+        bondAngle: '120°',
+        hybridization: 'sp2'
+    },
+    'BeCl2': {
+        name: 'Beryllium Chloride',
+        nameCN: '氯化铍',
+        atoms: [
+            { element: 'Be', x: 0, y: 0, z: 0 },
+            { element: 'Cl', x: -1.4, y: 0, z: 0 },
+            { element: 'Cl', x: 1.4, y: 0, z: 0 }
+        ],
+        bonds: [[0, 1, 1], [0, 2, 1]],
+        geometry: 'Linear',
+        geometryCN: '直线形',
+        bondAngle: '180°',
+        hybridization: 'sp'
     }
 };
 
@@ -300,10 +867,20 @@ let moleculeViewer = {
 };
 
 // Initialize Three.js viewer
-function initMoleculeViewer() {
-    const container = document.getElementById('molecule3dCanvas');
-    if (!container || moleculeViewer.initialized) return;
+function initMoleculeViewer(containerId) {
+    const container = document.getElementById(containerId || 'molecule3dCanvas');
+    if (!container) return;
+    if (moleculeViewer.initialized && moleculeViewer.container === container) return;
 
+    // If re-initializing for a different container, clean up old renderer
+    if (moleculeViewer.initialized && moleculeViewer.container !== container) {
+        if (moleculeViewer.renderer && moleculeViewer.renderer.domElement.parentNode) {
+            moleculeViewer.renderer.domElement.parentNode.removeChild(moleculeViewer.renderer.domElement);
+        }
+        moleculeViewer.initialized = false;
+    }
+
+    moleculeViewer.container = container;
     const width = container.clientWidth;
     const height = container.clientHeight;
 
@@ -356,7 +933,10 @@ function initMoleculeViewer() {
     moleculeViewer.raycaster = new THREE.Raycaster();
     moleculeViewer.mouse = new THREE.Vector2();
 
-    // Create tooltip element
+    // Create or reuse tooltip element
+    if (moleculeViewer.tooltipEl && moleculeViewer.tooltipEl.parentNode) {
+        moleculeViewer.tooltipEl.parentNode.removeChild(moleculeViewer.tooltipEl);
+    }
     moleculeViewer.tooltipEl = document.createElement('div');
     moleculeViewer.tooltipEl.className = 'atom-tooltip';
     moleculeViewer.tooltipEl.style.display = 'none';
@@ -426,23 +1006,27 @@ function initMoleculeViewer() {
 
     moleculeViewer.initialized = true;
 
-    // Handle resize
-    window.addEventListener('resize', () => {
+    // Handle resize (remove old listener first to prevent accumulation)
+    if (moleculeViewer._resizeHandler) {
+        window.removeEventListener('resize', moleculeViewer._resizeHandler);
+    }
+    moleculeViewer._resizeHandler = () => {
         if (!moleculeViewer.initialized) return;
         const w = container.clientWidth;
         const h = container.clientHeight;
         moleculeViewer.camera.aspect = w / h;
         moleculeViewer.camera.updateProjectionMatrix();
         moleculeViewer.renderer.setSize(w, h);
-    });
+    };
+    window.addEventListener('resize', moleculeViewer._resizeHandler);
 }
 
 // Render a molecule in 3D
-function renderMolecule3D(formula) {
+function renderMolecule3D(formula, containerId) {
     const molecule = MoleculesDB[formula];
     if (!molecule) return null;
 
-    initMoleculeViewer();
+    initMoleculeViewer(containerId);
 
     // Clear previous molecule
     while (moleculeViewer.moleculeGroup.children.length > 0) {
@@ -556,7 +1140,7 @@ function renderMolecule3D(formula) {
     moleculeViewer.controls.reset();
 
     // Store current formula for re-rendering on language change
-    const canvas = document.getElementById('molecule3dCanvas');
+    const canvas = document.getElementById(containerId || 'molecule3dCanvas');
     if (canvas) {
         canvas.setAttribute('data-formula', formula);
     }

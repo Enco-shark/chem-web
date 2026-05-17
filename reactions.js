@@ -46,6 +46,7 @@ const ReactionsDB = {
         principle: 'Hydrogen combustion. Hydrogen molecules react with oxygen molecules to form water. This is a highly exothermic reaction.',
         principleCN: '氢气燃烧。氢分子与氧分子反应生成水。这是一个高度放热的反应。',
         conditions: ['ignition'],
+        conditionsCN: ['点燃'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -63,6 +64,7 @@ const ReactionsDB = {
         principle: 'Methane combustion. Methane reacts with oxygen to produce carbon dioxide and water. This is the primary component of natural gas.',
         principleCN: '甲烷燃烧。甲烷与氧气反应生成二氧化碳和水。这是天然气的主要成分。',
         conditions: ['ignition'],
+        conditionsCN: ['点燃'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -182,6 +184,7 @@ const ReactionsDB = {
         principle: 'Iron oxide is reduced by carbon monoxide in a blast furnace reaction. This is the basis of iron smelting.',
         principleCN: '氧化铁被一氧化碳还原，这是高炉反应。这是炼铁的基础。',
         conditions: ['high temperature'],
+        conditionsCN: ['高温'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -216,6 +219,7 @@ const ReactionsDB = {
         principle: 'Potassium chlorate decomposes upon heating to produce potassium chloride and oxygen gas.',
         principleCN: '氯酸钾加热分解生成氯化钾和氧气。',
         conditions: ['△ heating', 'MnO2 catalyst'],
+        conditionsCN: ['△ 加热','MnO2 催化剂'],
         catalyst: 'MnO2',
         reversible: false,
         ionicEquation: null,
@@ -233,6 +237,7 @@ const ReactionsDB = {
         principle: 'Hydrogen peroxide decomposes into water and oxygen gas, accelerated by catalysts.',
         principleCN: '过氧化氢分解为水和氧气，催化剂可加速反应。',
         conditions: ['MnO2 catalyst'],
+        conditionsCN: ['MnO2 催化剂'],
         catalyst: 'MnO2',
         reversible: false,
         ionicEquation: null,
@@ -250,6 +255,7 @@ const ReactionsDB = {
         principle: 'Haber process for ammonia synthesis. Nitrogen and hydrogen combine under high pressure and temperature.',
         principleCN: '合成氨的哈伯法。氮气和氢气在高温高压下化合。',
         conditions: ['high temperature', 'high pressure', 'Fe catalyst'],
+        conditionsCN: ['高温','高压','Fe 催化剂'],
         catalyst: 'Fe',
         reversible: true,
         ionicEquation: null,
@@ -284,6 +290,7 @@ const ReactionsDB = {
         principle: 'Aluminum reacts with oxygen to form aluminum oxide, a protective layer on aluminum surfaces.',
         principleCN: '铝与氧气反应生成氧化铝，这是铝表面的保护层。',
         conditions: ['ignition'],
+        conditionsCN: ['点燃'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -301,6 +308,7 @@ const ReactionsDB = {
         principle: 'Magnesium burns in oxygen with a brilliant white flame to produce magnesium oxide.',
         principleCN: '镁在氧气中燃烧发出耀眼白光，生成氧化镁。',
         conditions: ['ignition'],
+        conditionsCN: ['点燃'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -318,6 +326,7 @@ const ReactionsDB = {
         principle: 'Carbon combustion. Carbon burns in oxygen to produce carbon dioxide.',
         principleCN: '碳燃烧。碳在氧气中燃烧生成二氧化碳。',
         conditions: ['ignition'],
+        conditionsCN: ['点燃'],
         catalyst: null,
         reversible: false,
         ionicEquation: null,
@@ -335,6 +344,7 @@ const ReactionsDB = {
         principle: 'Ammonium salt reacts with strong base to release ammonia gas.',
         principleCN: '铵盐与强碱反应释放氨气。',
         conditions: ['△ heating'],
+        conditionsCN: ['△ 加热'],
         catalyst: null,
         reversible: false,
         ionicEquation: 'NH4⁺ + OH⁻ → H2O + NH3↑',
@@ -377,6 +387,9 @@ Object.keys(ReactionsDB).forEach(key => {
 // Format reaction equation with animated HTML
 function formatReactionEquation(reaction) {
     const { reactants, products, conditions, balanced } = reaction;
+    const lang = document.documentElement.getAttribute('data-lang') || 'en';
+    const isCN = lang === 'zh';
+    const condText = isCN && reaction.conditionsCN ? reaction.conditionsCN : conditions;
 
     let html = '<div class="reaction-display">';
 
@@ -388,8 +401,8 @@ function formatReactionEquation(reaction) {
 
     // Arrow with conditions
     html += '<span class="reaction-arrow">';
-    if (conditions.length > 0) {
-        html += `<span class="condition">${conditions.join(' / ')}</span>`;
+    if (condText.length > 0) {
+        html += `<span class="condition">${condText.join(' / ')}</span>`;
     }
     if (reaction.reversible) {
         html += ' ⇌ ';
@@ -417,7 +430,9 @@ function formatReactionEquation(reaction) {
 
 // Format chemical formula with subscripts
 function formatFormula(formula) {
-    return formula.replace(/(\d+)/g, '<sub>$1</sub>');
+    // Only subscript numbers that follow an element letter or closing paren/bracket.
+    // Numbers at the start of a token (coefficients like "2H2O" → "2H₂O") stay normal-sized.
+    return formula.replace(/([A-Za-z\)²³⁺⁻])(\d+)/g, '$1<sub>$2</sub>');
 }
 
 // Render reaction result
@@ -447,19 +462,22 @@ function renderReactionResult(reactionKey) {
     html += `<div class="result-card" style="animation-delay: 0.1s">`;
     html += `<h3>${isCN ? '反应信息' : 'Reaction Information'}</h3>`;
     html += `<div class="info-grid">`;
-    html += makeInfoItem(isCN ? '反应类型' : 'Reaction Type', isCN ? reaction.typeCN : reaction.type);
+    const typeLabel = isCN ? reaction.typeCN : reaction.type;
+    const typeClickable = `<span class="tag-clickable" onclick="showReactionTypeInfo('${reaction.type}')" title="${isCN ? '点击查看详情' : 'Click for details'}">${typeLabel} ℹ</span>`;
+    html += makeInfoItem(isCN ? '反应类型' : 'Reaction Type', typeClickable);
     html += makeInfoItem(isCN ? '可逆反应' : 'Reversible', reaction.reversible ? (isCN ? '是' : 'Yes') : (isCN ? '否' : 'No'));
     if (reaction.catalyst) {
         html += makeInfoItem(isCN ? '催化剂' : 'Catalyst', reaction.catalyst);
     }
     if (reaction.conditions.length > 0) {
-        html += makeInfoItem(isCN ? '条件' : 'Conditions', reaction.conditions.join(', '));
+        const condDisplay = isCN && reaction.conditionsCN ? reaction.conditionsCN.join('、') : reaction.conditions.join(', ');
+        html += makeInfoItem(isCN ? '条件' : 'Conditions', condDisplay);
     }
     html += makeInfoItem(isCN ? '生成气体' : 'Gas Product', reaction.gasProduct ? (isCN ? '是' : 'Yes') : (isCN ? '否' : 'No'));
     html += makeInfoItem(isCN ? '生成沉淀' : 'Precipitate', reaction.precipitate ? (isCN ? '是' : 'Yes') : (isCN ? '否' : 'No'));
     html += `</div>`;
     html += `<div class="tag-row">`;
-    html += `<span class="tag tag-acid">${isCN ? reaction.typeCN : reaction.type}</span>`;
+    html += `<span class="tag tag-acid tag-clickable" onclick="showReactionTypeInfo('${reaction.type}')" title="${isCN ? '点击查看反应类型说明' : 'Click for reaction type info'}">${isCN ? reaction.typeCN : reaction.type}</span>`;
     if (reaction.reversible) html += `<span class="tag tag-neutral">${isCN ? '可逆' : 'reversible'}</span>`;
     if (reaction.gasProduct) html += `<span class="tag tag-organic">${isCN ? '气体' : 'gas'}</span>`;
     if (reaction.precipitate) html += `<span class="tag tag-oxide">${isCN ? '沉淀' : 'precipitate'}</span>`;
@@ -495,6 +513,202 @@ function makeInfoItem(label, value) {
     return `<div class="info-item"><div class="info-label">${label}</div><div class="info-value">${value}</div></div>`;
 }
 
+// Reaction type info database
+const ReactionTypeInfo = {
+    'neutralization': {
+        nameEN: 'Neutralization Reaction', nameCN: '中和反应',
+        descEN: 'A neutralization reaction is a chemical reaction between an acid and a base that produces a salt and water. It is one of the most fundamental reaction types in chemistry.',
+        descCN: '中和反应是酸和碱反应生成盐和水的化学反应。它是化学中最基本的反应类型之一。',
+        traitsEN: ['An acid reacts with a base.', 'The products are always a salt and water.', 'The reaction is typically exothermic (releases heat).', 'The pH of the resulting solution approaches 7.'],
+        traitsCN: ['酸与碱反应。', '产物一定是盐和水。', '反应通常是放热的（释放热量）。', '所得溶液的pH接近7。'],
+    },
+    'precipitation': {
+        nameEN: 'Precipitation Reaction', nameCN: '沉淀反应',
+        descEN: 'A precipitation reaction occurs when two soluble salts in solution react to form an insoluble solid (precipitate). These reactions are also called double displacement reactions.',
+        descCN: '沉淀反应是两种可溶性盐在溶液中反应生成不溶性固体（沉淀）的反应。这类反应也称为复分解反应。',
+        traitsEN: ['Two ionic compounds exchange ions.', 'An insoluble solid (precipitate) forms.', 'The precipitate can often be seen as a solid settling out or clouding the solution.', 'Common test reactions for identifying ions in solution.'],
+        traitsCN: ['两种离子化合物交换离子。', '生成不溶性固体（沉淀）。', '沉淀通常可以看到固体沉降或溶液浑浊。', '常用于检验溶液中的离子。'],
+    },
+    'combination': {
+        nameEN: 'Combination Reaction', nameCN: '化合反应',
+        descEN: 'A combination reaction is a basic type of chemical reaction where two or more substances (elements or compounds) react to form a single new substance.',
+        descCN: '化合反应是一种基本的化学反应类型，两种或多种物质（单质或化合物）反应生成一种新物质。',
+        traitsEN: ['At least two reactants, only one product.', 'The product must be a compound.', 'The types of elements remain the same before and after the reaction, but the number of substance types decreases.'],
+        traitsCN: ['至少两种反应物，只有一种产物。', '产物一定是化合物。', '反应前后元素种类不变，但物质种类减少。'],
+    },
+    'decomposition': {
+        nameEN: 'Decomposition Reaction', nameCN: '分解反应',
+        descEN: 'A decomposition reaction is a reaction where a single compound breaks down into two or more simpler substances (elements or simpler compounds).',
+        descCN: '分解反应是一种化合物分解为两种或多种较简单物质（单质或较简单化合物）的反应。',
+        traitsEN: ['One reactant breaks into two or more products.', 'Often requires energy input (heat, light, or electricity).', 'The reverse of a combination reaction.'],
+        traitsCN: ['一种反应物分解为两种或多种产物。', '通常需要能量输入（热、光或电）。', '化合反应的逆反应。'],
+    },
+    'displacement': {
+        nameEN: 'Displacement Reaction', nameCN: '置换反应',
+        descEN: 'A displacement reaction occurs when a more reactive element displaces a less reactive element from its compound. These reactions follow the activity series of metals.',
+        descCN: '置换反应是活泼性较强的元素将活泼性较弱的元素从其化合物中置换出来的反应。这类反应遵循金属活动性顺序。',
+        traitsEN: ['A more reactive element replaces a less reactive one.', 'Follows the activity series of metals (or halogens).', 'Can be single displacement (A + BC → AC + B) type.'],
+        traitsCN: ['活泼性较强的元素替代活泼性较弱的元素。', '遵循金属（或卤素）活动性顺序。', '可以是置换反应（A + BC → AC + B）类型。'],
+    },
+    'combustion': {
+        nameEN: 'Combustion Reaction', nameCN: '燃烧反应',
+        descEN: 'A combustion reaction is a chemical reaction where a substance reacts with oxygen, usually producing heat and light. Complete combustion of hydrocarbons produces CO₂ and H₂O.',
+        descCN: '燃烧反应是物质与氧气反应的化学反应，通常产生热和光。烃的完全燃烧生成CO₂和H₂O。',
+        traitsEN: ['A substance reacts with oxygen (O₂).', 'Produces heat and light (exothermic).', 'Complete combustion of organic compounds yields CO₂ and H₂O.', 'Incomplete combustion may produce CO or C (soot).'],
+        traitsCN: ['物质与氧气（O₂）反应。', '产生热和光（放热）。', '有机物完全燃烧生成CO₂和H₂O。', '不完全燃烧可能产生CO或C（炭黑）。'],
+    },
+    'oxidation': {
+        nameEN: 'Oxidation Reaction', nameCN: '氧化反应',
+        descEN: 'An oxidation reaction involves the loss of electrons by a substance. In a broader sense, it often refers to reactions where a substance gains oxygen or loses hydrogen.',
+        descCN: '氧化反应涉及物质失去电子。广义上，通常指物质得氧或失氢的反应。',
+        traitsEN: ['A substance loses electrons (or gains oxygen).', 'Always paired with a reduction reaction (redox).', 'Can involve oxygen, halogens, or other oxidizing agents.'],
+        traitsCN: ['物质失去电子（或得氧）。', '总是与还原反应配对（氧化还原反应）。', '可以涉及氧气、卤素或其他氧化剂。'],
+    },
+    'reduction': {
+        nameEN: 'Reduction Reaction', nameCN: '还原反应',
+        descEN: 'A reduction reaction involves the gain of electrons by a substance. In a broader sense, it often refers to reactions where a substance loses oxygen or gains hydrogen.',
+        descCN: '还原反应涉及物质得到电子。广义上，通常指物质失氧或得氢的反应。',
+        traitsEN: ['A substance gains electrons (or loses oxygen).', 'Always paired with an oxidation reaction (redox).', 'Common reducing agents include H₂, C, CO, and active metals.'],
+        traitsCN: ['物质得到电子（或失氧）。', '总是与氧化反应配对（氧化还原反应）。', '常见的还原剂包括H₂、C、CO和活泼金属。'],
+    },
+    'acid-carbonate': {
+        nameEN: 'Acid-Carbonate Reaction', nameCN: '酸与碳酸盐反应',
+        descEN: 'When an acid reacts with a carbonate (or bicarbonate), it produces a salt, water, and carbon dioxide gas. This is a classic test for carbonates.',
+        descCN: '酸与碳酸盐（或碳酸氢盐）反应生成盐、水和二氧化碳气体。这是检验碳酸盐的经典方法。',
+        traitsEN: ['An acid reacts with a carbonate or bicarbonate.', 'Products are salt + water + CO₂ gas.', 'The CO₂ gas can be detected by turning limewater milky.'],
+        traitsCN: ['酸与碳酸盐或碳酸氢盐反应。', '产物是盐 + 水 + CO₂气体。', 'CO₂气体可通过使石灰水变浑浊来检测。'],
+    },
+    'esterification': {
+        nameEN: 'Esterification Reaction', nameCN: '酯化反应',
+        descEN: 'Esterification is a reaction between a carboxylic acid and an alcohol to produce an ester and water. It is an acid-catalyzed reversible reaction.',
+        descCN: '酯化反应是羧酸和醇反应生成酯和水的反应。它是酸催化的可逆反应。',
+        traitsEN: ['A carboxylic acid reacts with an alcohol.', 'An ester and water are produced.', 'Requires an acid catalyst (usually H₂SO₄).', 'The reaction is reversible (equilibrium).'],
+        traitsCN: ['羧酸与醇反应。', '生成酯和水。', '需要酸催化剂（通常是H₂SO₄）。', '反应是可逆的（平衡反应）。'],
+    },
+    'substitution': {
+        nameEN: 'Substitution Reaction', nameCN: '取代反应',
+        descEN: 'A substitution reaction is one where an atom or group of atoms in a molecule is replaced by another atom or group. In aromatic chemistry, electrophilic aromatic substitution is the most common type.',
+        descCN: '取代反应是分子中的一个原子或原子团被另一个原子或原子团替代的反应。在芳香化学中，亲电芳香取代是最常见的类型。',
+        traitsEN: ['An atom or group is replaced by another.', 'Common in aromatic (benzene) chemistry.', 'Includes halogenation, nitration, and sulfonation.'],
+        traitsCN: ['一个原子或原子团被另一个替代。', '常见于芳香族（苯）化学。', '包括卤代、硝化和磺化。'],
+    },
+    'hydrolysis': {
+        nameEN: 'Hydrolysis Reaction', nameCN: '水解反应',
+        descEN: 'Hydrolysis is a chemical reaction where water is used to break the bonds of a substance. It is the reverse of condensation and is important in biochemistry.',
+        descCN: '水解反应是利用水来断裂物质化学键的化学反应。它是缩合反应的逆反应，在生物化学中很重要。',
+        traitsEN: ['Water reacts with a compound to break it apart.', 'Common for esters, amides, and salts.', 'Can be acid-catalyzed or base-catalyzed.'],
+        traitsCN: ['水与化合物反应使其分解。', '常见于酯、酰胺和盐。', '可以是酸催化或碱催化。'],
+    },
+    'saponification': {
+        nameEN: 'Saponification Reaction', nameCN: '皂化反应',
+        descEN: 'Saponification is the alkaline hydrolysis of a fat or oil to produce soap (a fatty acid salt) and glycerol. It is the traditional method of soap making.',
+        descCN: '皂化反应是油脂的碱性水解，生成肥皂（脂肪酸盐）和甘油。它是传统的制皂方法。',
+        traitsEN: ['A fat/oil reacts with a strong base (NaOH or KOH).', 'Produces soap and glycerol.', 'The reaction is irreversible.'],
+        traitsCN: ['油脂与强碱（NaOH或KOH）反应。', '生成肥皂和甘油。', '反应不可逆。'],
+    },
+    'polymerization': {
+        nameEN: 'Polymerization Reaction', nameCN: '聚合反应',
+        descEN: 'Polymerization is a reaction where small molecules (monomers) join together to form a large molecule (polymer). Addition polymerization and condensation polymerization are the two main types.',
+        descCN: '聚合反应是小分子（单体）连接在一起形成大分子（聚合物）的反应。加成聚合和缩合聚合是两种主要类型。',
+        traitsEN: ['Monomers join to form a polymer.', 'Addition polymerization: no byproducts (e.g., polyethylene).', 'Condensation polymerization: releases a small molecule (e.g., water).'],
+        traitsCN: ['单体连接形成聚合物。', '加成聚合：无副产物（如聚乙烯）。', '缩合聚合：释放小分子（如水）。'],
+    },
+    'electrolysis': {
+        nameEN: 'Electrolysis', nameCN: '电解反应',
+        descEN: 'Electrolysis is a process that uses electric current to drive a non-spontaneous chemical reaction. It is used in electroplating, metal refining, and chemical production.',
+        descCN: '电解是利用电流驱动非自发化学反应的过程。用于电镀、金属精炼和化学品生产。',
+        traitsEN: ['Requires an external electric current.', 'Non-spontaneous reaction driven by electrical energy.', 'Oxidation occurs at the anode, reduction at the cathode.'],
+        traitsCN: ['需要外部电流。', '由电能驱动的非自发反应。', '阳极发生氧化反应，阴极发生还原反应。'],
+    },
+    'thermite': {
+        nameEN: 'Thermite Reaction', nameCN: '铝热反应',
+        descEN: 'A thermite reaction is an exothermic redox reaction between a metal oxide and a metal (usually aluminum). It produces molten metal and is used in welding.',
+        descCN: '铝热反应是金属氧化物与金属（通常是铝）之间的放热氧化还原反应。产生熔融金属，用于焊接。',
+        traitsEN: ['Aluminum reduces a metal oxide.', 'Extremely exothermic (temperatures above 2500°C).', 'Used for welding railway tracks and in incendiary devices.'],
+        traitsCN: ['铝还原金属氧化物。', '极度放热（温度超过2500°C）。', '用于焊接铁轨和燃烧装置。'],
+    },
+    'addition': {
+        nameEN: 'Addition Reaction', nameCN: '加成反应',
+        descEN: 'An addition reaction occurs when atoms or groups are added across a double or triple bond, converting it to a single bond. It is characteristic of unsaturated organic compounds.',
+        descCN: '加成反应是原子或原子团加成到双键或三键上，将其转化为单键的反应。它是不饱和有机化合物的特征反应。',
+        traitsEN: ['Occurs at double or triple bonds.', 'The number of atoms in the molecule increases.', 'Characteristic of alkenes and alkynes.'],
+        traitsCN: ['发生在双键或三键处。', '分子中原子数增加。', '烯烃和炔烃的特征反应。'],
+    },
+    'oxidation-reduction': {
+        nameEN: 'Oxidation-Reduction Reaction', nameCN: '氧化还原反应',
+        descEN: 'An oxidation-reduction (redox) reaction involves the transfer of electrons between reactants. One substance is oxidized (loses electrons) while another is reduced (gains electrons).',
+        descCN: '氧化还原反应涉及反应物之间的电子转移。一种物质被氧化（失去电子），另一种物质被还原（得到电子）。',
+        traitsEN: ['Electron transfer occurs between reactants.', 'Oxidation and reduction always occur together.', 'Changes in oxidation states are observed.'],
+        traitsCN: ['电子在反应物之间转移。', '氧化和还原总是同时发生。', '观察到氧化态的变化。'],
+    },
+    'redox': {
+        nameEN: 'Redox Reaction', nameCN: '氧化还原反应',
+        descEN: 'A redox reaction involves the transfer of electrons between reactants. One substance is oxidized (loses electrons) while another is reduced (gains electrons).',
+        descCN: '氧化还原反应涉及反应物之间的电子转移。一种物质被氧化（失去电子），另一种物质被还原（得到电子）。',
+        traitsEN: ['Electron transfer occurs between reactants.', 'Oxidation and reduction always occur together.', 'Changes in oxidation states are observed.'],
+        traitsCN: ['电子在反应物之间转移。', '氧化和还原总是同时发生。', '观察到氧化态的变化。'],
+    },
+    'acid-base': {
+        nameEN: 'Acid-Base Reaction', nameCN: '酸碱反应',
+        descEN: 'An acid-base reaction involves the transfer of a proton (H⁺) from an acid to a base. This is a broader concept than neutralization, encompassing reactions with metal oxides and hydroxides.',
+        descCN: '酸碱反应涉及质子（H⁺）从酸转移到碱。这比中和反应更广泛，包括与金属氧化物和氢氧化物的反应。',
+        traitsEN: ['Involves proton (H⁺) transfer.', 'Acid donates a proton, base accepts it.', 'Can involve metal oxides reacting with acids.'],
+        traitsCN: ['涉及质子（H⁺）转移。', '酸给出质子，碱接受质子。', '可以涉及金属氧化物与酸的反应。'],
+    },
+    'double-displacement': {
+        nameEN: 'Double Displacement Reaction', nameCN: '复分解反应',
+        descEN: 'A double displacement (metathesis) reaction occurs when the cations and anions of two different compounds exchange places, forming two new compounds.',
+        descCN: '复分解反应是两种不同化合物的阳离子和阴离子交换位置，生成两种新化合物的反应。',
+        traitsEN: ['Two ionic compounds exchange ions.', 'Forms two new compounds.', 'Often driven by precipitation, gas formation, or water formation.'],
+        traitsCN: ['两种离子化合物交换离子。', '生成两种新化合物。', '通常由沉淀、气体或水的生成驱动。'],
+    },
+    'other': {
+        nameEN: 'Other Reaction', nameCN: '其他反应',
+        descEN: 'This reaction does not fit neatly into the standard categories. It may involve specialized conditions or mechanisms.',
+        descCN: '此反应不属于标准分类。可能涉及特殊条件或机理。',
+        traitsEN: ['May involve specialized reaction conditions.', 'Could be a multi-step process.'],
+        traitsCN: ['可能涉及特殊反应条件。', '可能是多步过程。'],
+    },
+};
+
+// Show reaction type info popup
+function showReactionTypeInfo(type) {
+    const lang = document.documentElement.getAttribute('data-lang') || 'en';
+    const isCN = lang === 'zh';
+    const info = ReactionTypeInfo[type] || ReactionTypeInfo['other'];
+
+    const name = isCN ? info.nameCN : info.nameEN;
+    const desc = isCN ? info.descCN : info.descEN;
+    const traits = isCN ? info.traitsCN : info.traitsEN;
+
+    let traitsHtml = traits.map(t => `<li>${t}</li>`).join('');
+
+    const popup = document.createElement('div');
+    popup.className = 'reaction-type-popup-overlay';
+    popup.innerHTML = `
+        <div class="reaction-type-popup glass-panel">
+            <div class="popup-header">
+                <h3>${name}</h3>
+                <button class="popup-close" onclick="this.closest('.reaction-type-popup-overlay').remove()">✕</button>
+            </div>
+            <div class="popup-body">
+                <p class="popup-desc">${desc}</p>
+                <h4>${isCN ? '主要特征' : 'Key Characteristics'}</h4>
+                <ul class="popup-traits">${traitsHtml}</ul>
+            </div>
+        </div>
+    `;
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup) popup.remove();
+    });
+    document.body.appendChild(popup);
+}
+
+// Strip leading stoichiometric coefficient from a formula (e.g. "2KClO3" → "KClO3", "3O2" → "O2")
+function stripCoeff(formula) {
+    return formula.replace(/^(\d+)\s*/, '');
+}
+
 // Analyze user input reaction
 function analyzeReaction(input) {
     const clean = input.trim().replace(/\s+/g, ' ');
@@ -504,19 +718,17 @@ function analyzeReaction(input) {
         return renderReactionResult(clean);
     }
 
-    // Try matching with different arrow formats
-    const normalized = clean
-        .replace(/→/g, '+')
-        .replace(/->/g, '+')
-        .replace(/=/g, '+')
-        .replace(/ yields /gi, '+')
-        .replace(/ gives /gi, '+')
+    // Try matching with different arrow formats — extract only reactant side
+    const arrowMatch = clean.match(/^(.+?)(?:→|->|=| yields | gives )(.+)$/i);
+    const reactantStr = arrowMatch ? arrowMatch[1] : clean;
+    const normalized = reactantStr
         .split('+')
         .map(s => s.trim())
         .filter(s => s.length > 0)
         .sort()
         .join(' + ');
 
+    // 1) Exact normalized match (user input vs key, no coefficient stripping)
     for (const key of Object.keys(ReactionsDB)) {
         const keyNorm = key.split('+').map(s => s.trim()).sort().join(' + ');
         if (keyNorm === normalized) {
@@ -524,18 +736,31 @@ function analyzeReaction(input) {
         }
     }
 
-    // Try partial match
+    // 2) Reactants-based match: compare stripped user input against each key's reactants array
+    const inputFormulas = reactantStr.split('+').map(s => stripCoeff(s.trim()).toLowerCase()).filter(s => s);
     for (const key of Object.keys(ReactionsDB)) {
-        const keyParts = key.split('+').map(s => s.trim().toLowerCase());
-        const inputParts = clean.split('+').map(s => s.trim().toLowerCase()).filter(s => s);
-        if (inputParts.every(p => keyParts.includes(p)) && inputParts.length === keyParts.length) {
+        const reaction = ReactionsDB[key];
+        if (!reaction.reactants) continue;
+        const reactantNames = reaction.reactants.map(r => r.toLowerCase());
+        if (inputFormulas.length === reactantNames.length &&
+            inputFormulas.every(f => reactantNames.includes(f))) {
+            return renderReactionResult(key);
+        }
+    }
+
+    // 3) Partial match (strip coefficients from both sides)
+    for (const key of Object.keys(ReactionsDB)) {
+        const keyParts = key.split('+').map(s => stripCoeff(s.trim()).toLowerCase());
+        const inputParts = reactantStr.split('+').map(s => stripCoeff(s.trim()).toLowerCase()).filter(s => s);
+        if (inputParts.length > 0 && inputParts.length === keyParts.length &&
+            inputParts.every(p => keyParts.includes(p))) {
             return renderReactionResult(key);
         }
     }
 
     // Try reaction prediction using inference engine
     if (typeof ChemInference !== 'undefined') {
-        const reactantFormulas = clean.split('+').map(s => s.trim()).filter(Boolean);
+        const reactantFormulas = reactantStr.split('+').map(s => s.trim()).filter(Boolean);
         if (reactantFormulas.length >= 1) {
             const predicted = ChemInference.predictReaction(reactantFormulas);
             if (predicted) {
@@ -576,9 +801,21 @@ function renderPredictedReaction(reactants, prediction) {
         html += `<span class="reactant">${formatFormula(r)}</span>`;
     });
 
+    // Translate conditions for display
+    const condCNMap = {
+        'heating': '加热', 'heat': '加热', '△ heating': '△ 加热',
+        'high temperature': '高温', 'high pressure': '高压',
+        'ignition': '点燃', 'electrolysis': '电解',
+        'UV light': '紫外光', 'sunlight': '阳光',
+        'catalyst': '催化剂', 'room temperature': '室温',
+        'concentrated': '浓', 'dilute': '稀',
+    };
+    function translateCond(c) { return condCNMap[c.toLowerCase()] || c; }
+
     html += '<span class="reaction-arrow">';
     if (prediction.conditions && prediction.conditions.length > 0) {
-        html += `<span class="condition">${prediction.conditions.join(' / ')}</span>`;
+        const condDisplay = isCN ? prediction.conditions.map(translateCond).join(' / ') : prediction.conditions.join(' / ');
+        html += `<span class="condition">${condDisplay}</span>`;
     }
     if (prediction.reversible) {
         html += ' ⇌ ';
@@ -607,7 +844,8 @@ function renderPredictedReaction(reactants, prediction) {
         html += makeInfoItem(isCN ? '催化剂' : 'Catalyst', prediction.catalyst);
     }
     if (prediction.conditions && prediction.conditions.length > 0) {
-        html += makeInfoItem(isCN ? '条件' : 'Conditions', prediction.conditions.join(', '));
+        const condInfoDisplay = isCN ? prediction.conditions.map(translateCond).join('、') : prediction.conditions.join(', ');
+        html += makeInfoItem(isCN ? '条件' : 'Conditions', condInfoDisplay);
     }
     html += `</div>`;
     html += `<div class="tag-row">`;

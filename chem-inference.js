@@ -314,7 +314,7 @@ const ChemInference = (() => {
 
         // Nonmetal Oxide + Water → Acid
         {
-            match: (r, p, rTypes) => rTypes.some(t => t.family === 'acidic-oxide') && reactants => reactants.includes('H2O'),
+            match: (r, p, rTypes) => rTypes.some(t => t.family === 'acidic-oxide') && r.includes('H2O'),
             predict: (reactants) => {
                 const oxide = reactants.find(f => ChemParser.inferCompoundType(f).family === 'acidic-oxide');
                 if (!oxide) return null;
@@ -344,7 +344,7 @@ const ChemInference = (() => {
 
         // Combustion of organic compound
         {
-            match: (r, p, rTypes) => rTypes.some(t => t.type === 'organic' || t.family === 'alkane' || t.family === 'alkene') && reactants => reactants.includes('O2'),
+            match: (r, p, rTypes) => rTypes.some(t => t.type === 'organic' || t.family === 'alkane' || t.family === 'alkene') && r.includes('O2'),
             predict: (reactants) => {
                 const organic = reactants.find(f => ChemParser.parse(f)['C']);
                 if (!organic) return null;

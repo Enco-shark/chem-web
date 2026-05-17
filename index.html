@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/creb-pubchem-js@1.1.0/dist/index.umd.js"></script>
 </head>
 <body>
     <!-- Ambient background -->
@@ -62,14 +63,18 @@
                     <path d="M15 9.5C15 13.09 12.09 16 8.5 16C5.46 16 2.93 13.84 2.25 11C2.09 10.33 2 9.63 2 8.91C2 4.99 5.14 1.82 9.04 1.79C9.36 1.79 9.67 1.8 9.98 1.83C9.32 2.5 8.9 3.43 8.9 4.45C8.9 6.47 10.54 8.12 12.56 8.12C13.29 8.12 13.97 7.91 14.54 7.56C14.83 8.35 15 9.11 15 9.5Z" stroke="currentColor" stroke-width="1.2"/>
                 </svg>
             </button>
-            <button class="toolbar-btn glass-btn" id="viewToggle" data-i18n-title="viewMode" title="View Mode">
+            <a class="toolbar-btn glass-btn" id="elementLink" href="https://enco-shark.github.io/element_web/" target="_blank" rel="noopener" data-i18n-title="periodicTable" title="Periodic Table">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-                    <circle cx="9" cy="9" r="3" stroke="currentColor" stroke-width="1.2"/>
-                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5"/>
-                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5" transform="rotate(60 9 9)"/>
-                    <ellipse cx="9" cy="9" rx="8" ry="3" stroke="currentColor" stroke-width="0.8" opacity="0.5" transform="rotate(120 9 9)"/>
+                    <rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <text x="4" y="5.5" font-size="4" fill="currentColor" text-anchor="middle" font-weight="600">H</text>
+                    <rect x="11" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <text x="14" y="5.5" font-size="4" fill="currentColor" text-anchor="middle" font-weight="600">O</text>
+                    <rect x="6" y="11" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/>
+                    <text x="9" y="15.5" font-size="4" fill="currentColor" text-anchor="middle" font-weight="600">Na</text>
+                    <line x1="4" y1="7" x2="9" y2="11" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
+                    <line x1="14" y1="7" x2="9" y2="11" stroke="currentColor" stroke-width="0.8" opacity="0.4"/>
                 </svg>
-            </button>
+            </a>
         </div>
     </header>
 
@@ -229,6 +234,37 @@
                 </div>
             </div>
             <div id="organicResult" class="result-area"></div>
+
+            <!-- 3D Molecular Viewer for Organic -->
+            <div id="organic3dSection" class="viewer-3d-container glass-card" style="display:none; margin-top: 16px;">
+                <div class="viewer-3d-header" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px 0;">
+                    <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary);" data-i18n="molecularStructure">3D Molecular Structure</h3>
+                    <div class="viewer-controls" style="position: static;">
+                        <button class="viewer-ctrl-btn glass-btn" id="autoRotateBtn2" data-i18n-title="autoRotate" title="Auto Rotate">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <path d="M8 1C4.13 1 1 4.13 1 8s3.13 7 7 7 7-3.13 7-7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                                <path d="M15 1v4h-4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <button class="viewer-ctrl-btn glass-btn" id="resetViewBtn2" data-i18n-title="resetView" title="Reset View">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.2"/>
+                                <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.5"/>
+                            </svg>
+                        </button>
+                        <button class="viewer-ctrl-btn glass-btn" id="toggleOrbitalsBtn2" data-i18n-title="toggleOrbitals" title="Toggle Orbitals">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6"/>
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6" transform="rotate(60 8 8)"/>
+                                <ellipse cx="8" cy="8" rx="7" ry="3" stroke="currentColor" stroke-width="1" opacity="0.6" transform="rotate(120 8 8)"/>
+                                <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.4"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div id="organic3dCanvas" class="viewer-3d-canvas"></div>
+            </div>
+            <div id="organic3dInfo" class="result-area"></div>
         </section>
 
     </main>
@@ -244,6 +280,11 @@
     <script src="chem-database-generator.js"></script>
     <script src="chem-reaction-generator.js"></script>
     <script src="chem-massive-compounds.js"></script>
+    <script src="chem-compounds-mega.js"></script>
+    <script src="chem-molecules-mega.js"></script>
+    <script src="chem-molecules-mega-2.js"></script>
+    <script src="chem-molecules-mega-3.js"></script>
+    <script src="chem-molecules-mega-4.js"></script>
     <script src="chem-fallback.js"></script>
     <script src="app.js"></script>
 </body>
