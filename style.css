@@ -898,6 +898,31 @@ a.toolbar-btn {
     color: var(--text-secondary);
     margin-bottom: 6px;
 }
+
+/* Footer */
+.app-footer {
+    display: flex;
+    justify-content: center;
+    padding: 24px 16px 32px;
+}
+.footer-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s, background 0.2s, transform 0.15s;
+}
+.footer-btn:hover {
+    color: var(--accent);
+    background: var(--accent-light);
+    transform: translateY(-1px);
+}
+
 @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
