@@ -49,7 +49,8 @@ const i18n = {
         errorOccurred: 'An error occurred. Please try again.',
         language: 'Language',
         theme: 'Theme',
-        viewMode: 'View Mode'
+        viewMode: 'View Mode',
+        openSource: 'Open Source'
     },
     zh: {
         appTitle: '化学实验室',
@@ -94,7 +95,8 @@ const i18n = {
         errorOccurred: '查询出错，请重试。',
         language: '语言',
         theme: '主题',
-        viewMode: '视图模式'
+        viewMode: '视图模式',
+        openSource: '开源项目'
     }
 };
 
